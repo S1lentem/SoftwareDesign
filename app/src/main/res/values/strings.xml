@@ -3,6 +3,8 @@
     <string name="not_access_imei">
         Data cannot be displayed because there is no access to it
     </string>
-    <string name="version_title" >Version:&#160;</string>
-    <string name="imei_title">IMEI:&#160;</string>
+    <string name="version_title" >Version: %s</string>
+    <string name="imei_title">IMEI: %s</string>
+    <string name="permission_description">This permission is required to display the current devices IMEI.</string>
+    <string name="ok">ok</string>
 </resources>
