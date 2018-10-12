@@ -2,7 +2,6 @@
     <string name="app_name">Get IMEI</string>
     <string name="not_access_imei">
         Data cannot be displayed because there is no access to it
-        Please!
     </string>
     <string name="version_title" >Version:&#160;</string>
     <string name="imei_title">IMEI:&#160;</string>
