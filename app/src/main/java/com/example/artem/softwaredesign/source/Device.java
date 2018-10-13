@@ -1,7 +1,6 @@
 package com.example.artem.softwaredesign.source;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.design.widget.Snackbar;
@@ -10,21 +9,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.artem.softwaredesign.BuildConfig;
 import com.example.artem.softwaredesign.R;
 
-
 public class Device extends AppCompatActivity {
 
-    private interface PermissionRequestable{
-        void invoke();
-    }
-
     private final int REQUEST_CODE_PERMISSION_READ_PHONE_STATE = 1;
+    private boolean isFirstPermissionRequest = false;
     private TextView imeiView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +35,11 @@ public class Device extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(Manifest.permission.READ_PHONE_STATE);
         } else {
-            TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            imeiView.setText(String.format(getResources().getString(R.string.imei_title), manager.getDeviceId()));
+            showImei(null);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+                && isFirstPermissionRequest){
+            requestPermissions(Manifest.permission.READ_PHONE_STATE);
         }
     }
 
@@ -57,6 +55,7 @@ public class Device extends AppCompatActivity {
                     .show();
 
         } else {
+            isFirstPermissionRequest = true;
             ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_PERMISSION_READ_PHONE_STATE);
         }
     }
@@ -65,7 +64,10 @@ public class Device extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_PERMISSION_READ_PHONE_STATE: {
-                showImei(getResources().getString(R.string.not_access_imei));
+                    showImei(getResources().getString(R.string.not_access_imei));
+            }
+            default: {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
     }
