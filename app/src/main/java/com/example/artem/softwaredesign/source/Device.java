@@ -58,6 +58,8 @@ public class Device extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -86,6 +88,8 @@ public class Device extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     public void onSaveInstanceState(Bundle  savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -94,6 +98,7 @@ public class Device extends AppCompatActivity {
             savedInstanceState.putString(keyForSaveImei, currentImei);
         }
     }
+
 
 
     private void requestPermissions(String... permissions) {
@@ -113,6 +118,7 @@ public class Device extends AppCompatActivity {
     }
 
 
+
     private String getImei(String defaultString) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -124,7 +130,9 @@ public class Device extends AppCompatActivity {
         return  defaultString;
     }
 
-    private void createButtonForDescriptionPermissions(String text, String description, int id, String... permissions) {
+
+
+    private void createButtonForDescriptionPermissions(String text, String description, int id, String permission) {
         final Snackbar bar = Snackbar.make(findViewById(R.id.root), description, Snackbar.LENGTH_INDEFINITE);
         Button btn = new Button(this);
         Button temp = findViewById(buttonDescriptionId);
@@ -135,13 +143,23 @@ public class Device extends AppCompatActivity {
 
         btn.setId(id);
         btn.setText(text);
-        btn.setOnClickListener(v -> bar.setAction(getResources().getString(R.string.ok),
-                v1 -> ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_PERMISSION_READ_PHONE_STATE)).show());
+        btn.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED){
+                imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
+            }
+            else {
+                bar.setAction(getResources().getString(R.string.ok),
+                        v1 -> ActivityCompat.requestPermissions(this, new String[]{permission},
+                                REQUEST_CODE_PERMISSION_READ_PHONE_STATE)).show();
+            }
+        });
 
         if (temp == null) {
             llMain.addView(btn);
         }
     }
+
+
 
     private void removeButtonById(int id) {
         Button btn = findViewById(id);
