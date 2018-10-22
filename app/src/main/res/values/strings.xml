@@ -3,8 +3,13 @@
     <string name="not_access_imei">
         Data cannot be displayed because there is no access to it
     </string>
+    <string name="never_permission_description">
+        You must provide access to phone data to get IMEI
+    </string>
+    <string name="name_for_update_button">Update</string>
     <string name="version_title" >Version: %s</string>
     <string name="imei_title">IMEI: %s</string>
     <string name="permission_description">This permission is required to display the current devices IMEI.</string>
     <string name="ok">ok</string>
+    <string name="default_for_imei">Something went wrong, IMEI could not be determined</string>
 </resources>
