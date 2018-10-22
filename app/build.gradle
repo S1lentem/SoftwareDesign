@@ -1,10 +1,19 @@
 apply plugin: 'com.android.application'
 
 def getVersion(){
-    def cmd = 'git describe --tags'
+    def cmd = 'git log --pretty=format:"%h%d" --all'
     Process process = cmd.execute()
-    String[] descriptionInfo = process.in.text.split('-')
-    return descriptionInfo[0] + "." + descriptionInfo[1]
+    String[] commits = process.in.text.split('\\n')
+    def patch = 0
+    String majorMinor
+    for (commit in commits){
+        if (commit =~ /tag: \b\d+[.]\d+\b/) {
+            majorMinor = commit.find(/\b\d+[.]\d+\b/)
+            break
+        }
+        patch++
+    }
+    return majorMinor + "." + patch
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
