@@ -2,6 +2,7 @@ package com.example.artem.softwaredesign.source;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.support.design.widget.Snackbar;
@@ -21,13 +22,12 @@ import com.example.artem.softwaredesign.R;
 public class Device extends AppCompatActivity {
 
     private final int REQUEST_CODE_PERMISSION_READ_PHONE_STATE = 1;
-    private final int buttonDescriptionId = 2;
-    private final String keyForSaveImei = "imei";
+    private final String preferenceKey = "IMEI";
+    private final String preferenceName = "PHONE_SETTINGS";
 
-    private LinearLayout llMain;
+    private Button buttonPermissionDescription;
     private TextView imeiView;
-    private String currentImei = null;
-
+    private SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,9 @@ public class Device extends AppCompatActivity {
         setContentView(R.layout.activity_device);
 
         TextView versionView = findViewById(R.id.version);
+        buttonPermissionDescription = findViewById(R.id.update);
         imeiView = findViewById(R.id.ImeiInfo);
-        llMain = findViewById(R.id.main);
+        settings = getSharedPreferences(preferenceName, MODE_PRIVATE);
 
         if (getResources().getBoolean(R.bool.orientation_is_portrait)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -46,9 +47,8 @@ public class Device extends AppCompatActivity {
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            if (savedInstanceState != null){
-                currentImei = savedInstanceState.getString(keyForSaveImei);
-                imeiView.setText(currentImei);
+            if (settings.contains(preferenceKey)){
+                imeiView.setText(settings.getString(preferenceKey, getResources().getString(R.string.default_for_imei)));
             }
             else {
                 requestPermissions(Manifest.permission.READ_PHONE_STATE);
@@ -66,18 +66,16 @@ public class Device extends AppCompatActivity {
             case REQUEST_CODE_PERMISSION_READ_PHONE_STATE: {
                 if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
-                    removeButtonById(buttonDescriptionId);
+                    disablePermissionDescription();
                 }
                 else {
                     if (shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)){
-                        createButtonForDescriptionPermissions(getResources().getString(R.string.name_for_update_button),
-                                getResources().getString(R.string.permission_description),
-                                buttonDescriptionId, Manifest.permission.READ_PHONE_STATE);
+                        enablePermissionsDescription(getResources().getString(R.string.permission_description),
+                                Manifest.permission.READ_PHONE_STATE);
                     }
                     else {
-                        createButtonForDescriptionPermissions(getResources().getString(R.string.name_for_update_button),
-                                getResources().getString(R.string.never_permission_description),
-                                buttonDescriptionId, Manifest.permission.READ_PHONE_STATE);
+                        enablePermissionsDescription(getResources().getString(R.string.never_permission_description),
+                                Manifest.permission.READ_PHONE_STATE);
                     }
                 }
             }
@@ -86,18 +84,6 @@ public class Device extends AppCompatActivity {
             }
         }
     }
-
-
-
-    @Override
-    public void onSaveInstanceState(Bundle  savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-
-        if (currentImei != null) {
-            savedInstanceState.putString(keyForSaveImei, currentImei);
-        }
-    }
-
 
 
     private void requestPermissions(String... permissions) {
@@ -117,13 +103,17 @@ public class Device extends AppCompatActivity {
     }
 
 
-
     private String getImei(String defaultString) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            currentImei = manager.getDeviceId();
-            return currentImei;
+            String imei = manager.getDeviceId();
+            if (!settings.contains(preferenceKey)) {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(preferenceKey, imei);
+                editor.apply();
+            }
+            return imei;
 
         }
         return  defaultString;
@@ -131,17 +121,16 @@ public class Device extends AppCompatActivity {
 
 
 
-    private void createButtonForDescriptionPermissions(String text, String description, int id, String permission) {
+    private void enablePermissionsDescription(String description, String permission) {
         final Snackbar bar = Snackbar.make(findViewById(R.id.root), description, Snackbar.LENGTH_INDEFINITE);
-        Button temp = findViewById(buttonDescriptionId);
-        Button btn = temp != null ? temp : new Button(this);
 
-        btn.setId(id);
-        btn.setText(text);
-        btn.setOnClickListener(v -> {
+        buttonPermissionDescription.setText(getResources().getString(R.string.name_for_update_button));
+        buttonPermissionDescription.setVisibility(View.VISIBLE);
+
+        buttonPermissionDescription.setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED){
                 imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
-                removeButtonById(buttonDescriptionId);
+                disablePermissionDescription();
             }
             else {
                 bar.setAction(getResources().getString(R.string.ok),
@@ -149,16 +138,9 @@ public class Device extends AppCompatActivity {
                                 REQUEST_CODE_PERMISSION_READ_PHONE_STATE)).show();
             }
         });
-
-        if (temp == null) {
-            llMain.addView(btn);
-        }
     }
 
-    private void removeButtonById(int id) {
-        Button btn = findViewById(id);
-        if (btn != null) {
-            btn.setVisibility(View.GONE);
-        }
+    private void disablePermissionDescription() {
+        buttonPermissionDescription.setVisibility(View.INVISIBLE);
     }
 }
