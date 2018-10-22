@@ -146,6 +146,7 @@ public class Device extends AppCompatActivity {
         btn.setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED){
                 imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
+                removeButtonById(buttonDescriptionId);
             }
             else {
                 bar.setAction(getResources().getString(R.string.ok),
