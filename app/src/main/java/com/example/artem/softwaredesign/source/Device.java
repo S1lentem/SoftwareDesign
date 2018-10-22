@@ -64,8 +64,7 @@ public class Device extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_PERMISSION_READ_PHONE_STATE: {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                    == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
                     removeButtonById(buttonDescriptionId);
                 }
@@ -134,12 +133,8 @@ public class Device extends AppCompatActivity {
 
     private void createButtonForDescriptionPermissions(String text, String description, int id, String permission) {
         final Snackbar bar = Snackbar.make(findViewById(R.id.root), description, Snackbar.LENGTH_INDEFINITE);
-        Button btn = new Button(this);
         Button temp = findViewById(buttonDescriptionId);
-
-        if (temp != null){
-            btn = temp;
-        }
+        Button btn = temp != null ? temp : new Button(this);
 
         btn.setId(id);
         btn.setText(text);
@@ -159,8 +154,6 @@ public class Device extends AppCompatActivity {
             llMain.addView(btn);
         }
     }
-
-
 
     private void removeButtonById(int id) {
         Button btn = findViewById(id);
