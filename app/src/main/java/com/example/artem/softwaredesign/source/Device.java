@@ -21,12 +21,9 @@ import com.example.artem.softwaredesign.R;
 public class Device extends AppCompatActivity {
 
     private final int REQUEST_CODE_PERMISSION_READ_PHONE_STATE = 1;
-    private final String preferenceKey = "IMEI";
-    private final String preferenceName = "PHONE_SETTINGS";
 
     private Button buttonPermissionDescription;
     private TextView imeiView;
-    private SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +33,6 @@ public class Device extends AppCompatActivity {
         TextView versionView = findViewById(R.id.version);
         buttonPermissionDescription = findViewById(R.id.update);
         imeiView = findViewById(R.id.ImeiInfo);
-        settings = getSharedPreferences(preferenceName, MODE_PRIVATE);
 
         if (getResources().getBoolean(R.bool.orientation_is_portrait)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -46,12 +42,7 @@ public class Device extends AppCompatActivity {
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            if (settings.contains(preferenceKey)){
-                imeiView.setText(settings.getString(preferenceKey, getResources().getString(R.string.default_for_imei)));
-            }
-            else {
-                requestPermissions(Manifest.permission.READ_PHONE_STATE);
-            }
+            requestPermissions(Manifest.permission.READ_PHONE_STATE);
         } else {
             imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
         }
@@ -106,14 +97,7 @@ public class Device extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            String imei = manager.getDeviceId();
-            if (!settings.contains(preferenceKey)) {
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString(preferenceKey, imei);
-                editor.apply();
-            }
-            return imei;
-
+            return manager.getDeviceId();
         }
         return  defaultString;
     }
