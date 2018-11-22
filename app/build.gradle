@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: "androidx.navigation.safeargs"
 
-def getVersion(){
+def getVersion() {
     def cmd = 'git describe --tags'
     Process process = cmd.execute()
     String[] descriptionInfo = process.in.text.split('-')
@@ -41,9 +42,9 @@ android {
     }
 
     android.applicationVariants.all { variant ->
-            variant.outputs.all {
-                outputFileName = "${rootProject.name}-${variant.versionName}.apk"
-            }
+        variant.outputs.all {
+            outputFileName = "${rootProject.name}-${variant.versionName}.apk"
+        }
     }
     flavorDimensions "version"
     productFlavors {
@@ -62,11 +63,17 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'com.google.android.material:material:1.1.0-alpha01'
+    def nav_version = "1.0.0-alpha07"
+    implementation "android.arch.navigation:navigation-fragment:$nav_version"
+    implementation "android.arch.navigation:navigation-ui:$nav_version"
+
+
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/user_info_fragment">
+
+    <fragment
+        android:id="@+id/user_info_fragment"
+        android:name="com.example.artem.softwaredesign.UserInfo"
+        android:label="fragment_user_info"
+        tools:layout="@layout/fragment_user_info" ></fragment>
+    <fragment
+        android:id="@+id/otherFragment"
+        android:name="com.example.artem.softwaredesign.OtherFragment"
+        android:label="fragment_other"
+        tools:layout="@layout/fragment_other" />
+</navigation>
