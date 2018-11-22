@@ -45,6 +45,7 @@ public class Device extends AppCompatActivity {
             requestPermissions(Manifest.permission.READ_PHONE_STATE);
         } else {
             imeiView.setText(getImei(getResources().getString(R.string.default_for_imei)));
+            disablePermissionDescription();
         }
     }
 

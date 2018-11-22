@@ -18,10 +18,8 @@
     <item android:title="@string/group_for_other">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:id="@+id/imei_info"
                 android:title="@string/imei_info" />
         </menu>
     </item>
-
 </menu>
