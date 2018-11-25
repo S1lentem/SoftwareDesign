@@ -21,6 +21,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Menu components -->
     <string name="user_info">User info</string>
     <string name="first_page">First page</string>
     <string name="second_page">Second page</string>
@@ -30,4 +31,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- UserInfo -->
+    <string name="user_info_template">
+        First name: %s\nLast name: %s\nPhone: %s\nEmail: %s\n
+    </string>
+
+    <string name="default_first_name">NoName</string>
+    <string name="default_last_name">NoName</string>
+    <string name="default_email">NoEmail@gmail.com</string>
+    <string name="default_phone">NoPhone</string>
 </resources>
