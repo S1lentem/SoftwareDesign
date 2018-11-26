@@ -40,4 +40,7 @@
     <string name="default_last_name">NoName</string>
     <string name="default_email">NoEmail@gmail.com</string>
     <string name="default_phone">NoPhone</string>
+    <string name="edit_button_name">Edit</string>
+    <string name="back_to_user_info">Back</string>
+    <string name="save_user_info">Save</string>
 </resources>

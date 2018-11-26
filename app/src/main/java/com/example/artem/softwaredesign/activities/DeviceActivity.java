@@ -1,8 +1,7 @@
-package com.example.artem.softwaredesign.source;
+package com.example.artem.softwaredesign.activities;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import com.google.android.material.snackbar.Snackbar;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 import com.example.artem.softwaredesign.BuildConfig;
 import com.example.artem.softwaredesign.R;
 
-public class Device extends AppCompatActivity {
+public class DeviceActivity extends AppCompatActivity {
 
     private final int REQUEST_CODE_PERMISSION_READ_PHONE_STATE = 1;
 

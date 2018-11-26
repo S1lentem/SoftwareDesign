@@ -1,9 +1,11 @@
-package com.example.artem.softwaredesign;
+package com.example.artem.softwaredesign.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.artem.softwaredesign.R;
 
 import androidx.fragment.app.Fragment;
 

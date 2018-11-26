@@ -20,17 +20,17 @@ public class UserDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + "("
                 + "id integer primary key autoincrement,"
-                + UserColNames.FIRST_NAME + " text,"
-                + UserColNames.LAST_NAME + " text,"
-                + UserColNames.PHONE + " text,"
-                + UserColNames.EMAIL + " text" + ");");
+                + ColumnsTable.first_name + " text,"
+                + ColumnsTable.last_name + " text,"
+                + ColumnsTable.phone + " text,"
+                + ColumnsTable.email + " text" + ");");
 
         db.execSQL("INSERT INTO " + TABLE_NAME
                 + " ("
-                + UserColNames.FIRST_NAME + ", "
-                + UserColNames.LAST_NAME + ", "
-                + UserColNames.PHONE + ", "
-                + UserColNames.EMAIL + ") VALUES "
+                + ColumnsTable.first_name + ", "
+                + ColumnsTable.last_name + ", "
+                + ColumnsTable.phone + ", "
+                + ColumnsTable.email + ") VALUES "
                 + DEFAULT_INSERT_FOR_USER_INFO + ";");
     }
 
