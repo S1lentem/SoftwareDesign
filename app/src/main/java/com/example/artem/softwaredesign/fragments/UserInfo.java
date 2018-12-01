@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.models.User;
+import com.example.artem.softwaredesign.data.storages.UserAvatarManager;
 import com.example.artem.softwaredesign.interfaces.UserInfoListener;
 
 import androidx.fragment.app.Fragment;
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment;
 public class UserInfo extends Fragment{
     private ImageView avatar;
     private TextView userInfoView;
+
 
     private UserInfoListener userInfoListener;
 
@@ -33,6 +35,8 @@ public class UserInfo extends Fragment{
             userInfoView.setText(String.format(parentContainer.getResources().getString(R.string.user_info_template),
                     user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail()));
         }
+
+
 
         parentContainer.findViewById(R.id.go_edit_user_info_button)
                 .setOnClickListener(v -> userInfoListener.onUserEditClick());

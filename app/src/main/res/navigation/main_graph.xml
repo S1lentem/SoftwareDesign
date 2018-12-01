@@ -9,11 +9,7 @@
         android:id="@+id/user_info_fragment"
         android:name="com.example.artem.softwaredesign.fragments.UserInfo"
         android:label="fragment_user_info"
-        tools:layout="@layout/fragment_user_info" >
-        <action
-            android:id="@+id/action_user_info_fragment_to_edit_user_info"
-            app:destination="@id/edit_user_info" />
-    </fragment>
+        tools:layout="@layout/fragment_user_info" />
     <fragment
         android:id="@+id/other_fragment"
         android:name="com.example.artem.softwaredesign.fragments.OtherFragment"
@@ -25,9 +21,10 @@
         android:label="activity_device"
         tools:layout="@layout/activity_device" />
     <fragment
-        android:id="@+id/edit_user_info"
-        android:name="com.example.artem.softwaredesign.fragments.EditUserInfo"
-        android:label="fragment_edit_user_ifno"
-        tools:layout="@layout/fragment_edit_user_ifno" />
+        android:id="@+id/user_edit"
+        android:name="com.example.artem.softwaredesign.fragments.UserEdit"
+        android:label="fragment_user_edit"
+        tools:layout="@layout/fragment_user_edit" />
+
 
 </navigation>

@@ -4,8 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.UserInfo">
+    tools:context=".fragments.UserInfo"
+    android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/avatar_image_view"
+        android:layout_width="159dp"
+        android:layout_height="233dp"
+        android:src="@drawable/default_avatar" />
 
     <TextView
         android:id="@+id/user_info_text_view"
@@ -16,7 +22,7 @@
 
     <Button
         android:id="@+id/go_edit_user_info_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/edit_button_name"/>
 
