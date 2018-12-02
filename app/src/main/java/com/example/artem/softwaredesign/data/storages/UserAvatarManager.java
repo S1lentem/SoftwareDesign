@@ -1,47 +1,40 @@
 package com.example.artem.softwaredesign.data.storages;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class UserAvatarManager {
 
-    private final String avatarFileName = "avatar.jpg";
-    private final String tempAvatarFileName = "temp";
-
+    private final String AVATAR_NAME = "avatar.jpg";
     private Context context;
 
     public UserAvatarManager(Context context){
         this.context = context;
     }
 
-    public void updateAvatar(Context context){
-        File newAvatar = new File(context.getCacheDir().getAbsoluteFile() + File.separator
-                + tempAvatarFileName);
-        if (newAvatar.exists()){
-            newAvatar.renameTo(new File(context.getCacheDir().getAbsoluteFile() + File.separator
-                    + avatarFileName));
+    public void updateAvatar(Bitmap avatar){
+        File newAvatar = new File(context.getCacheDir().getAbsolutePath(), AVATAR_NAME);
+        try {
+            FileOutputStream out = new FileOutputStream(newAvatar);
+            avatar.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
-    public String getUriForTempAvatar(boolean autoCreated){
-        File avatar = new File(context.getCacheDir().getAbsolutePath(), tempAvatarFileName);
-        if (autoCreated){
-            try {
-                avatar.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return avatar.getAbsolutePath();
+    public Uri getUriForUserAvatar(){
+        File file = new File(context.getCacheDir().getAbsolutePath(), AVATAR_NAME);
+        return file.exists() ? Uri.fromFile(file) : null;
     }
 
-    public File createFileImage() throws IOException {
-        File imageFile = File.createTempFile(tempAvatarFileName,  ".jpg", context.getCacheDir());
-        return imageFile;
+    public Uri generateUriForSave(){
+        File file = new File(context.getCacheDir().getAbsolutePath(), AVATAR_NAME);
+        return Uri.fromFile(file);
     }
 }

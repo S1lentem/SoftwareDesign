@@ -2,6 +2,7 @@ package com.example.artem.softwaredesign.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -38,8 +39,6 @@ public class MainActivity extends AppCompatActivity
     private NavController navController;
     private UserRepository userRepository;
 
-    private ImageView viewForAvatar;
-    private Uri photoUri;
 
 
     @Override
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity
         NavigationUI.setupActionBarWithNavController(this, navController, findViewById(R.id.drawer_layout));
 
 
-        viewForAvatar = findViewById(R.id.edit_avatar_image_view);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,9 +75,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void loadUserAvatar(ImageView view) {
+
+            Uri uriForAvatar = userAvatarManager.getUriForUserAvatar();
+            if (uriForAvatar != null) {
+                view.setImageURI(uriForAvatar);
+            }
+    }
+
+    @Override
     public void saveChangesFromEditing(User user) {
+        final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
+        Bitmap avatar = ((BitmapDrawable)viewForAvatar.getDrawable()).getBitmap();
         userRepository.savedUser(user);
-        userAvatarManager.updateAvatar(this);
+        userAvatarManager.updateAvatar(avatar);
         navController.popBackStack();
     }
 
@@ -91,17 +100,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void createNewAvatar(ImageView view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photoFile = null;
-        try {
-            photoFile = userAvatarManager.createFileImage();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (photoFile != null) {
-            photoUri = Uri.fromFile(photoFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            startActivityForResult(intent, TAKE_PICTURE_REQUEST);
-        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, userAvatarManager.generateUriForSave().getPath());
+        startActivityForResult(intent, TAKE_PICTURE_REQUEST);
     }
 
     @Override
@@ -114,15 +114,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
             case TAKE_PICTURE_REQUEST:
-                if (resultCode == RESULT_OK && data != null){
-                    
+                if (resultCode == RESULT_OK && data != null) {
+                    final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
+                    if (viewForAvatar != null) {
+                        Bitmap avatar = (Bitmap) data.getExtras().get("data");
+                        viewForAvatar.setImageBitmap(avatar);
+                    }
                 }
                 break;
             case GALLERY_REQUEST:
                 break;
+        }
+    }
+
+    private void updateAvatarImageView(){
+        final ImageView avatarImageView = findViewById(R.id.avatar_image_view);
+        Uri uriForAvatar = userAvatarManager.getUriForUserAvatar();
+        if (uriForAvatar != null){
+            avatarImageView.setImageURI(uriForAvatar);
         }
     }
 }
