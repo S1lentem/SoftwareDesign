@@ -95,19 +95,13 @@
                 android:id="@+id/save_user_info_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:background="@color/green"
                 android:text="@string/save_user_info" />
 
             <Button
                 android:id="@+id/back_from_edit_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:background="@color/red"
                 android:text="@string/back_to_user_info" />
         </LinearLayout>
     </ScrollView>
-
-
 </LinearLayout>

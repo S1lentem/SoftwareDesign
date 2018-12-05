@@ -17,6 +17,7 @@
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_main"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
             <nav-graph android:value="@navigation/main_graph"/>
             <intent-filter>
