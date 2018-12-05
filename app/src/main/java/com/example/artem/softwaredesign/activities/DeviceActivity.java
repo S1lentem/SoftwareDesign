@@ -107,6 +107,7 @@ public class DeviceActivity extends AppCompatActivity {
     private void enablePermissionsDescription(String description, String permission) {
         final Snackbar bar = Snackbar.make(findViewById(R.id.root), description, Snackbar.LENGTH_INDEFINITE);
 
+
         buttonPermissionDescription.setText(getResources().getString(R.string.name_for_update_button));
         buttonPermissionDescription.setVisibility(View.VISIBLE);
 

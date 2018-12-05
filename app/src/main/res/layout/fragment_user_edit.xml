@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.UserEdit">
+    tools:context=".fragments.UserEditFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,13 +27,13 @@
                 android:id="@+id/from_gallery_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Load form gallery" />
+                android:text="@string/open_gallery" />
 
             <Button
                 android:id="@+id/load_camera_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Take pictures" />
+                android:text="@string/open_camera" />
 
 
             <com.google.android.material.textfield.TextInputLayout

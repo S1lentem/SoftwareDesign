@@ -24,7 +24,7 @@
     <!-- Menu components -->
     <string name="user_info">User info</string>
     <string name="first_page">First page</string>
-    <string name="second_page">Second page</string>
+    <string name="second_page">News</string>
     <string name="imei_info">IMEI info</string>
     <string name="group_for_other">Other</string>
 
@@ -45,10 +45,23 @@
     <string name="edit_button_name">Edit</string>
     <string name="back_to_user_info">Back</string>
     <string name="save_user_info">Save</string>
+    <string name="open_camera">Open camera</string>
+    <string name="open_gallery">Open gallery</string>
 
     <!-- Labels -->
     <string name="first_name_label">First name</string>
     <string name="last_name_label">Last name</string>
     <string name="email_label">Email</string>
     <string name="phone_label">Phone</string>
+
+    <!-- Fragments names -->
+    <string name="user_info_fragment_title">User Info</string>
+    <string name="editing_user_info_fragment_title">Editing User Info</string>
+    <string name="news_fragment_title">News</string>
+    <string name="other_fragment_title">Other</string>
+    <string name="about_fragment_title">About</string>
+
+
+    <!-- Other -->
+    <string name="place_for_news">Place for news</string>
 </resources>

@@ -10,17 +10,17 @@ import android.widget.TextView;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.models.User;
-import com.example.artem.softwaredesign.interfaces.UserInfoListener;
+import com.example.artem.softwaredesign.interfaces.OnFragmentUserInfoListener;
 
 import androidx.fragment.app.Fragment;
 
 
-public class UserInfo extends Fragment{
+public class UserInfoFragment extends Fragment{
     private ImageView avatar;
     private TextView userInfoView;
 
 
-    private UserInfoListener userInfoListener;
+    private OnFragmentUserInfoListener onFragmentUserInfoListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,7 +30,7 @@ public class UserInfo extends Fragment{
 
 
 
-        User user = userInfoListener.getUser();
+        User user = onFragmentUserInfoListener.getUser();
         if (user != null) {
             userInfoView.setText(String.format(parentContainer.getResources().getString(R.string.user_info_template),
                     user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail()));
@@ -39,9 +39,9 @@ public class UserInfo extends Fragment{
 
 
         parentContainer.findViewById(R.id.go_edit_user_info_button)
-                .setOnClickListener(v -> userInfoListener.onUserEditClick());
+                .setOnClickListener(v -> onFragmentUserInfoListener.onUserEditClick());
 
-        userInfoListener.loadUserAvatar(parentContainer.findViewById(R.id.avatar_image_view));
+        onFragmentUserInfoListener.loadUserAvatar(parentContainer.findViewById(R.id.avatar_image_view));
 
         return parentContainer;
     }
@@ -51,9 +51,9 @@ public class UserInfo extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            userInfoListener = (UserInfoListener) context;
+            onFragmentUserInfoListener = (OnFragmentUserInfoListener) context;
         } catch (ClassCastException ex){
-            throw new ClassCastException(String.format("%s must implement userInfoListener", context.toString()));
+            throw new ClassCastException(String.format("%s must implement onFragmentUserInfoListener", context.toString()));
         }
     }
 

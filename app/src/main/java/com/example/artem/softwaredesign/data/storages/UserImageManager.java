@@ -8,12 +8,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class UserAvatarManager {
+public class UserImageManager {
 
     private final String AVATAR_NAME = "avatar.jpg";
     private Context context;
 
-    public UserAvatarManager(Context context){
+    public UserImageManager(Context context){
         this.context = context;
     }
 

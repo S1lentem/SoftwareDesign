@@ -4,8 +4,11 @@ import android.widget.ImageView;
 
 import com.example.artem.softwaredesign.data.models.User;
 
-public interface UserInfoListener {
-    void onUserEditClick();
+public interface OnFragmentUserEditListener {
     User getUser();
+    void saveChangesFromEditing(User user);
+    void comeBackFromEditing();
+    void openCamera(ImageView view);
+    void loadGallery();
     void loadUserAvatar(ImageView view);
 }

@@ -7,24 +7,37 @@
 
     <fragment
         android:id="@+id/user_info_fragment"
-        android:name="com.example.artem.softwaredesign.fragments.UserInfo"
-        android:label="fragment_user_info"
-        tools:layout="@layout/fragment_user_info" />
+        android:name="com.example.artem.softwaredesign.fragments.UserInfoFragment"
+        android:label="@string/user_info_fragment_title"
+        tools:layout="@layout/fragment_user_info" >
+        <deepLink app:uri="app://SoftwareDesign/page/1" />
+    </fragment>
     <fragment
         android:id="@+id/other_fragment"
         android:name="com.example.artem.softwaredesign.fragments.OtherFragment"
-        android:label="fragment_other"
-        tools:layout="@layout/fragment_other" />
-    <activity
-        android:id="@+id/imei_info"
-        android:name="com.example.artem.softwaredesign.activities.DeviceActivity"
-        android:label="activity_device"
-        tools:layout="@layout/activity_device" />
+        android:label="@string/other_fragment_title"
+        tools:layout="@layout/fragment_other" >
+        <deepLink app:uri="app://SoftwareDesign/page/2" />
+    </fragment>
     <fragment
         android:id="@+id/user_edit"
-        android:name="com.example.artem.softwaredesign.fragments.UserEdit"
-        android:label="fragment_user_edit"
-        tools:layout="@layout/fragment_user_edit" />
+        android:name="com.example.artem.softwaredesign.fragments.UserEditFragment"
+        android:label="@string/editing_user_info_fragment_title"
+        tools:layout="@layout/fragment_user_edit" >
+        <deepLink app:uri="app://SoftwareDesign/page/1/edit"/>
+    </fragment>
+    <fragment
+        android:id="@+id/news"
+        android:name="com.example.artem.softwaredesign.fragments.NewsFragment"
+        android:label="@string/news_fragment_title"
+        tools:layout="@layout/fragment_news" >
+        <deepLink app:uri="app://SoftwareDesign/page/3"/>
+    </fragment>
+    <fragment
+        android:id="@+id/about"
+        android:name="com.example.artem.softwaredesign.fragments.AboutFragment"
+        android:label="@string/about_fragment_title"
+        tools:layout="@layout/fragment_about" />
 
 
 </navigation>
