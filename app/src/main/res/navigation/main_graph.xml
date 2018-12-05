@@ -30,8 +30,8 @@
         android:id="@+id/news"
         android:name="com.example.artem.softwaredesign.fragments.NewsFragment"
         android:label="@string/news_fragment_title"
-        tools:layout="@layout/fragment_news" >
-        <deepLink app:uri="app://SoftwareDesign/page/3"/>
+        tools:layout="@layout/fragment_news">
+        <deepLink app:uri="app://SoftwareDesign/page/3" />
     </fragment>
     <fragment
         android:id="@+id/about"
