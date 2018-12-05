@@ -47,12 +47,16 @@
     <string name="save_user_info">Save</string>
     <string name="open_camera">Open camera</string>
     <string name="open_gallery">Open gallery</string>
+    <string name="log_in_button_name">Log In</string>
+    <string name="registration_button_name">Registration</string>
 
     <!-- Labels -->
     <string name="first_name_label">First name</string>
     <string name="last_name_label">Last name</string>
     <string name="email_label">Email</string>
     <string name="phone_label">Phone</string>
+    <string name="password_label">Password</string>
+    <string name="confirm_password_label">Confirm password</string>
 
     <!-- Fragments names -->
     <string name="user_info_fragment_title">User Info</string>
