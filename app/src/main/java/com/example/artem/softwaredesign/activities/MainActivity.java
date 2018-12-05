@@ -1,11 +1,13 @@
 package com.example.artem.softwaredesign.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.example.artem.softwaredesign.R;
@@ -20,6 +22,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.IOException;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -94,19 +97,6 @@ public class MainActivity extends PermissionActivity
         navController.popBackStack();
     }
 
-    @Override
-    public void openCamera(ImageView view) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, userAvatarManager.generateUriForSave().getPath());
-        startActivityForResult(intent, OPEN_CAMERA_REQUEST);
-    }
-
-    @Override
-    public void loadGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, OPEN_GALLERY_REQUEST);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -135,5 +125,49 @@ public class MainActivity extends PermissionActivity
                     }
                 }
         }
+    }
+
+    @Override
+    public void onPhotoUserClick(){
+        final CharSequence[] items = {"Camera", "Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(items, (dialog, which) -> {
+            switch (which){
+                case 0:
+                    openCamera(null);
+                    break;
+                case 1:
+                    openGallery();
+                    break;
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void exitFromEditing() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Важное сообщение!")
+                .setMessage("Покормите кота!")
+                .setCancelable(false)
+                .setPositiveButton("ОК, иду на кухню",
+                        (dialog, id) -> dialog.cancel())
+                .setNegativeButton("Ytn", ((dialog, which) -> dialog.cancel()));
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void openCamera(ImageView view) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, userAvatarManager.generateUriForSave().getPath());
+        startActivityForResult(intent, OPEN_CAMERA_REQUEST);
+    }
+
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 }
