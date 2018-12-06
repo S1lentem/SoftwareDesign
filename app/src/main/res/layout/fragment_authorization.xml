@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.authentication.AuthorizationFragment"
     android:orientation="vertical">
 
@@ -12,8 +13,10 @@
         android:orientation="vertical"
         android:padding="16dp">
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/email_for_authorization_text_input_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:errorEnabled="true">
 
         <EditText
             android:id="@+id/email_for_authorization"
@@ -26,8 +29,11 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_for_authorization_text_input_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        app:errorEnabled="true">
 
         <EditText
             android:id="@+id/password_for_authorization"
@@ -46,9 +52,9 @@
         android:text="@string/log_in_button_name"/>
 
     <Button
-        android:id="@+id/registration_button"
+        android:id="@+id/go_to_registration_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/registration_button_name"/>
+        android:text="@string/go_to_registration_button_name"/>
     </LinearLayout>
 </LinearLayout>

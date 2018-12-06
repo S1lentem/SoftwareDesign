@@ -17,27 +17,6 @@ public class UserSQLiteRepository implements UserRepository {
         dbHelper = new UserDbHelper(context);
     }
 
-//    @Override
-//    public User getUser(){
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        try {
-//            String request = "SELECT * FROM " + dbHelper.getTableName();
-//            Cursor cursor = db.rawQuery(request, null);
-//            if (cursor.moveToNext()){
-//                userId = cursor.getInt(ColumnsTable.id.ordinal());
-//                String firstName = cursor.getString(ColumnsTable.first_name.ordinal());
-//                String lastName = cursor.getString(ColumnsTable.last_name.ordinal());
-//                String phone = cursor.getString(ColumnsTable.phone.ordinal());
-//                String email = cursor.getString(ColumnsTable.email.ordinal());
-//                return new User(firstName, lastName, phone, email);
-//            }
-//            return null;
-//        }
-//        finally {
-//            db.close();
-//        }
-//    }
-
     @Override
     public void savedUser(User user) {
         ContentValues cv = new ContentValues();
@@ -63,6 +42,7 @@ public class UserSQLiteRepository implements UserRepository {
         contentValues.put(ColumnsTable.last_name.toString(), user.getLastName());
         contentValues.put(ColumnsTable.phone.toString(), user.getPhone());
         contentValues.put(ColumnsTable.email.toString(), user.getEmail());
+        contentValues.put(ColumnsTable.password.toString(), user.getPassword());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         try {
             database.insert(dbHelper.getTableName(), null, contentValues);

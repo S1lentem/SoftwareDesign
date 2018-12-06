@@ -49,6 +49,7 @@
     <string name="open_camera">Open camera</string>
     <string name="open_gallery">Open gallery</string>
     <string name="log_in_button_name">Log In</string>
+    <string name="go_to_registration_button_name">Go to Registration</string>
     <string name="registration_button_name">Registration</string>
 
     <!-- Labels -->
@@ -79,4 +80,17 @@
     <!-- AlertDialog for new avatar -->
     <string name="for_camera">Camera</string>
     <string name="for_gallery">Gallery</string>
+
+    <!-- Empty field error messages -->
+    <string name="message_for_empty_email">Email field cannot be empty</string>
+    <string name="message_for_empty_password">Password field cannot be empty</string>
+    <string name="message_for_empty_confirm_password">Confirm password field cannot be empty</string>
+    <string name="message_for_empty_first_name">First name field cannot be empty</string>
+    <string name="message_for_empty_last_name">Last name field cannot be empty</string>
+    <string name="message_for_empty_phone">Phone field cannot be empty</string>
+
+    <!-- invalid field messages -->
+    <string name="massage_for_not_match_password">confirm password and password must match</string>
+    <string name="message_for_email_not_found">User with this email does not exist</string>
+    <string name="message_for_missing_password">Wrong password</string>
 </resources>

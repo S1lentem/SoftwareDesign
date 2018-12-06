@@ -25,7 +25,8 @@
         <activity
             android:name="com.example.artem.softwaredesign.activities.AuthenticationActivity"
             android:label="@string/title_activity_main"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:windowSoftInputMode="adjustResize">
             <nav-graph android:value="@navigation/authentication_graph" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

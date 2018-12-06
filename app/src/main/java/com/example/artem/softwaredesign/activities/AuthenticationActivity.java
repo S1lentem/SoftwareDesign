@@ -10,13 +10,13 @@ import com.example.artem.softwaredesign.data.exceptions.EmailNotFoundException;
 import com.example.artem.softwaredesign.data.exceptions.PasswordDoesNotMatchException;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAuthorizationListener;
-import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRegistrtionListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRegistrationListener;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 public class AuthenticationActivity extends UserStorageActivity
-    implements OnFragmentAuthorizationListener, OnFragmentRegistrtionListener {
+    implements OnFragmentAuthorizationListener, OnFragmentRegistrationListener {
 
     private NavController navController;
 
@@ -48,7 +48,7 @@ public class AuthenticationActivity extends UserStorageActivity
     }
 
     @Override
-    public void onRegistrationButtonClick(){
+    public void onGoToRegistrationButtonClick(){
         navController.navigate(R.id.registrationFragment);
     }
 
@@ -72,12 +72,6 @@ public class AuthenticationActivity extends UserStorageActivity
         tost.show();
     }
 
-    @Override
-    public void onRegistrationUserClick(User user) {
-        userRepository.addUser(user);
-    }
-
-
     public void logIn(int id){
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -87,5 +81,17 @@ public class AuthenticationActivity extends UserStorageActivity
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(CURRENT_USER_ID_KEY, id);
         startActivity(intent);
+    }
+
+    @Override
+    public void onRegistrationButtonClick(User user) {
+        userRepository.addUser(user);
+        int id = userRepository.getUserByEmail(user.getEmail()).getId();
+        logIn(id);
+    }
+
+    @Override
+    public void onBackButtonClick() {
+        navController.popBackStack();
     }
 }
