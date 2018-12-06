@@ -1,9 +1,8 @@
-package com.example.artem.softwaredesign.fragments;
+package com.example.artem.softwaredesign.fragments.main;
 
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import android.widget.ImageView;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.models.User;
-import com.example.artem.softwaredesign.interfaces.OnFragmentUserEditListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
 
 public class UserEditFragment extends Fragment {
     private EditText firstNameEditText;
@@ -70,7 +69,7 @@ public class UserEditFragment extends Fragment {
         lastNameEditText.setText(user.getLastName());
 
         phoneEditText = parentContainer.findViewById(R.id.phone_edit);
-        phoneEditText.getText().insert(phoneEditText.getSelectionStart(), user.getPhone());
+        phoneEditText.setText(user.getPhone());
 
         emailEditText = parentContainer.findViewById(R.id.email_edit);
         emailEditText.setText(user.getEmail());

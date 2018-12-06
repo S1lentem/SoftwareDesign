@@ -1,24 +1,18 @@
 package com.example.artem.softwaredesign.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.artem.softwaredesign.BuildConfig;
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.data.PermissionState;
-import com.example.artem.softwaredesign.interfaces.OnFragmentAboutListener;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAboutListener;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-public class PermissionActivity extends AppCompatActivity
+public class PermissionActivity extends UserStorageActivity
         implements OnFragmentAboutListener {
 
     private final int REQUEST_CODE_PERMISSION_READ_PHONE_STATE = 1;

@@ -27,6 +27,7 @@
     <string name="second_page">News</string>
     <string name="imei_info">IMEI info</string>
     <string name="group_for_other">Other</string>
+    <string name="logout">LogOut</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -68,4 +69,14 @@
 
     <!-- Other -->
     <string name="place_for_news">Place for news</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- AlertDialog for logout !-->
+    <string name="logout_description_for_dialog">Are you sure you want to log out?</string>
+    <string name="positive_logout">Yes</string>
+    <string name="negative_logout">No</string>
+
+    <!-- AlertDialog for new avatar -->
+    <string name="for_camera">Camera</string>
+    <string name="for_gallery">Gallery</string>
 </resources>

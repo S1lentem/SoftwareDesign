@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.fragments;
+package com.example.artem.softwaredesign.fragments.main;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.interfaces.OnFragmentAboutListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAboutListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.fragment.app.Fragment;

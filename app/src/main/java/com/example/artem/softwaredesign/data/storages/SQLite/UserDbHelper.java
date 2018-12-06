@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.data.storages;
+package com.example.artem.softwaredesign.data.storages.SQLite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,7 +9,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME  = "User.db";
     private static final int DATABASE_VERSION = 1;
     private final String TABLE_NAME = "users";
-    private final String DEFAULT_INSERT_FOR_USER_INFO = "('NoName', 'NoName', 'NoEmail', 'NoPhone')";
+    private final String DEFAULT_INSERT_FOR_USER_INFO = "('NoName', 'NoName', 'NoPhone' , 'NoEmail' , '112233')";
 
     public UserDbHelper( Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -23,19 +23,23 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 + ColumnsTable.first_name + " text,"
                 + ColumnsTable.last_name + " text,"
                 + ColumnsTable.phone + " text,"
-                + ColumnsTable.email + " text" + ");");
+                + ColumnsTable.email + " text,"
+                + ColumnsTable.password + " text" + ");");
 
         db.execSQL("INSERT INTO " + TABLE_NAME
                 + " ("
                 + ColumnsTable.first_name + ", "
                 + ColumnsTable.last_name + ", "
                 + ColumnsTable.phone + ", "
-                + ColumnsTable.email + ") VALUES "
+                + ColumnsTable.email + ", "
+                + ColumnsTable.password + ") VALUES "
                 + DEFAULT_INSERT_FOR_USER_INFO + ";");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
 
     }
 

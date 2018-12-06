@@ -3,7 +3,6 @@
     package="com.example.artem.softwaredesign">
 
 
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
@@ -15,11 +14,19 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.MainActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_main"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar">
-            <nav-graph android:value="@navigation/main_graph"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <nav-graph android:value="@navigation/main_graph" />
+
+        </activity>
+
+        <activity
+            android:name="com.example.artem.softwaredesign.activities.AuthenticationActivity"
+            android:label="@string/title_activity_main"
+            android:noHistory="true">
+            <nav-graph android:value="@navigation/authentication_graph" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,5 +34,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

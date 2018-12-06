@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.interfaces;
+package com.example.artem.softwaredesign.interfaces.fragments;
 
 import android.widget.ImageView;
 
