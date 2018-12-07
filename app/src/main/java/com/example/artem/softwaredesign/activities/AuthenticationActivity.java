@@ -3,9 +3,10 @@ package com.example.artem.softwaredesign.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.crypto.EncryptionAlgorithm;
+import com.example.artem.softwaredesign.data.crypto.HashManager;
 import com.example.artem.softwaredesign.data.exceptions.EmailNotFoundException;
 import com.example.artem.softwaredesign.data.exceptions.PasswordDoesNotMatchException;
 import com.example.artem.softwaredesign.data.models.User;
@@ -21,6 +22,8 @@ public class AuthenticationActivity extends UserStorageActivity
     private NavController navController;
 
     private final String USER_KEY = "user_key";
+
+    private final HashManager hashManager = new HashManager(EncryptionAlgorithm.MD5);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +59,8 @@ public class AuthenticationActivity extends UserStorageActivity
     public void onLogInButtonClick(String email, String password)
             throws PasswordDoesNotMatchException, EmailNotFoundException {
         User user = userRepository.getUserByEmail(email);
-        String message = "ok";
         if (user != null){
-            if (user.getPassword().equals(password)){
+            if (user.getPassword().equals(hashManager.getHash(password))){
                 logIn(user.getId());
             }
             else {
@@ -68,8 +70,6 @@ public class AuthenticationActivity extends UserStorageActivity
         else {
             throw new EmailNotFoundException();
         }
-        Toast tost = Toast.makeText(this, message, Toast.LENGTH_LONG);
-        tost.show();
     }
 
     public void logIn(int id){
@@ -84,7 +84,9 @@ public class AuthenticationActivity extends UserStorageActivity
     }
 
     @Override
-    public void onRegistrationButtonClick(User user) {
+    public void onRegistrationButtonClick(String firstName, String lastName, String email,
+                                          String phone, String password) {
+        User user = new User(0, firstName, lastName, email, phone, hashManager.getHash(password));
         userRepository.addUser(user);
         int id = userRepository.getUserByEmail(user.getEmail()).getId();
         logIn(id);

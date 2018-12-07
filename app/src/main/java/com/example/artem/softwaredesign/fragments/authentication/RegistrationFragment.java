@@ -89,8 +89,8 @@ public class RegistrationFragment extends Fragment {
             phoneTextInputLayout.setError(getResources().getString(R.string.message_for_empty_phone));
         }
 
-        if (password.equals(confirmPassword)){
-
+        if (!password.equals(confirmPassword)){
+            passwordTextInputLayout.setError(getResources().getString(R.string.massage_for_not_match_password));
         }
 
         return !email.isEmpty() && !password.isEmpty() && !firstName.isEmpty() && !lastName.isEmpty()
@@ -99,15 +99,12 @@ public class RegistrationFragment extends Fragment {
 
     private void createNewUser(){
         if (isValidForm()){
-            User user = new User(
-                    0,
+            onFragmentAuthorizationListener.onRegistrationButtonClick(
                     firsNameEditText.getText().toString(),
                     lastNameEditText.getText().toString(),
                     emailEditText.getText().toString(),
                     phoneEditText.getText().toString(),
-                    passwordEditText.getText().toString()
-            );
-            onFragmentAuthorizationListener.onRegistrationButtonClick(user);
+                    passwordEditText.getText().toString());
         }
     }
 
