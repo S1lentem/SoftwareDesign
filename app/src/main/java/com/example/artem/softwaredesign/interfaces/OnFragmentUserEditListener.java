@@ -7,8 +7,7 @@ import com.example.artem.softwaredesign.data.models.User;
 public interface OnFragmentUserEditListener {
     User getUser();
     void saveChangesFromEditing(User user);
-    void comeBackFromEditing();
+    void comeBackFromEditing(String firstName, String lastName, String email, String phone);
     void loadUserAvatar(ImageView view);
     void onPhotoUserClick();
-    void exitFromEditing();
 }

@@ -93,7 +93,13 @@ public class MainActivity extends PermissionActivity
     }
 
     @Override
-    public void comeBackFromEditing() {
+    public void comeBackFromEditing(String firstName, String lastName, String email, String phone) {
+        User user = userRepository.getUser();
+        if (!user.getFirstName().equals(firstName) || !user.getLastName().equals(lastName) ||
+                !user.getEmail().equals(email) || user.getPhone().equals(phone)){
+
+        }
+
         navController.popBackStack();
     }
 
@@ -141,19 +147,6 @@ public class MainActivity extends PermissionActivity
                     break;
             }
         });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    @Override
-    public void exitFromEditing() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Важное сообщение!")
-                .setMessage("Покормите кота!")
-                .setCancelable(false)
-                .setPositiveButton("ОК, иду на кухню",
-                        (dialog, id) -> dialog.cancel())
-                .setNegativeButton("Ytn", ((dialog, which) -> dialog.cancel()));
         AlertDialog alert = builder.create();
         alert.show();
     }
