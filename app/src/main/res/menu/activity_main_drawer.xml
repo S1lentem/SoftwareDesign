@@ -14,12 +14,4 @@
             android:id="@+id/news"
             android:title="@string/second_page" />
     </group>
-
-    <item android:title="@string/group_for_other">
-        <menu>
-            <item
-                android:id="@+id/about"
-                android:title="@string/imei_info" />
-        </menu>
-    </item>
 </menu>

@@ -8,6 +8,7 @@
     android:padding="16dp"
     tools:context=".fragments.main.UserInfoFragment">
 
+
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/avatar_image_view"
             android:layout_width="128dp"

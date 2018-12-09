@@ -6,6 +6,7 @@
     android:orientation="vertical"
     tools:context=".fragments.main.UserEditFragment">
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center">
 
-                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/edit_avatar_image_view"
                     android:layout_width="128dp"
                     android:layout_height="128dp"
@@ -91,12 +93,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/save_user_info" />
-
-            <Button
-                android:id="@+id/back_from_edit_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/back_to_user_info" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
