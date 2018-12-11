@@ -11,6 +11,9 @@
         android:label="@string/user_info_fragment_title"
         tools:layout="@layout/fragment_user_info" >
         <deepLink app:uri="app://SoftwareDesign/page/1" />
+        <action
+            android:id="@+id/action_user_info_fragment_to_user_edit"
+            app:destination="@id/user_edit" />
     </fragment>
     <fragment
         android:id="@+id/other_fragment"

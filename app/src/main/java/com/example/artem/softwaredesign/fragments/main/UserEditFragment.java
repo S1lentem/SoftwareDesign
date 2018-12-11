@@ -67,14 +67,24 @@ public class UserEditFragment extends Fragment {
         emailEditText.setText(user.getEmail());
     }
 
-    private void saveChanges(){
-        User user = new User(
+    private User getUserFromEditForm(){
+        return new User(
                 firstNameEditText.getText().toString(),
                 lastNameEditText.getText().toString(),
                 phoneEditText.getText().toString(),
                 emailEditText.getText().toString()
         );
-        onFragmentUserEditListener.saveChangesFromEditing(user);
     }
 
+    private void saveChanges(){
+        onFragmentUserEditListener.saveChangesFromEditing(getUserFromEditForm());
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (onFragmentUserEditListener.isReturnFromEditing()){
+            onFragmentUserEditListener.checkAndSaveModifiedData(getUserFromEditForm());
+        }
+        super.onDestroyView();
+    }
 }

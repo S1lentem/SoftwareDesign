@@ -44,4 +44,24 @@ public class User {
     public int getId(){
         return this.id;
     }
+
+    @Override
+    public boolean equals(Object object){
+        if (!super.equals(object)){
+            return  false;
+        }
+
+        if (this == object){
+            return true;
+        }
+        if (this.getClass() != object.getClass()){
+            return false;
+        }
+        User checkedUser = (User)object;
+        return this.firstName.equals(checkedUser.getLastName()) &&
+                this.lastName.equals(checkedUser.getLastName()) &&
+                this.phone.equals(checkedUser.getPhone()) &&
+                this.email.equals(checkedUser.getEmail());
+
+    }
 }

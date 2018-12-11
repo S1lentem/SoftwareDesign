@@ -9,4 +9,7 @@ public interface OnFragmentUserEditListener {
     void saveChangesFromEditing(User user);
     void loadUserAvatar(ImageView view);
     void onPhotoUserClick();
+    boolean isReturnFromEditing();
+    void checkAndSaveModifiedData(User user);
+
 }

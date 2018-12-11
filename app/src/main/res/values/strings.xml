@@ -83,6 +83,9 @@
     <string name="for_camera">Camera</string>
     <string name="for_gallery">Gallery</string>
 
+    <!-- AlertDialog for change user -->
+    <string name="change_data_request">You want to save changed data</string>
+
     <!-- Empty field error messages -->
     <string name="message_for_empty_email">Email field cannot be empty</string>
     <string name="message_for_empty_password">Password field cannot be empty</string>
