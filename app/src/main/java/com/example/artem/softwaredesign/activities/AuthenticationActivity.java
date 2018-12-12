@@ -38,8 +38,6 @@ public class AuthenticationActivity extends UserStorageActivity
 
         String userId = sessionController.getIdAuthorizedUser();
         if (userId != null){
-            Toast toast = Toast.makeText(this, userId, Toast.LENGTH_SHORT);
-            toast.show();
             logIn(userId);
         }
 

@@ -67,6 +67,13 @@ public class UserEditFragment extends Fragment {
         emailEditText.setText(user.getEmail());
     }
 
+    @Override
+    public void onResume() {
+        onFragmentUserEditListener.setCurrentFragmentIsEditing(true);
+
+        super.onResume();
+    }
+
     private User getUserFromEditForm(){
         return new User(
                 firstNameEditText.getText().toString(),
@@ -81,10 +88,8 @@ public class UserEditFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        if (onFragmentUserEditListener.isReturnFromEditing()){
-            onFragmentUserEditListener.checkAndSaveModifiedData(getUserFromEditForm());
-        }
-        super.onDestroyView();
+    public void onPause() {
+        onFragmentUserEditListener.setCurrentFragmentIsEditing(false);
+        super.onPause();
     }
 }

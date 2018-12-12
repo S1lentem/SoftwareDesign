@@ -39,11 +39,15 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends PermissionActivity
         implements OnFragmentUserInfoListener, OnFragmentUserEditListener {
 
+    private interface Navigatable{
+        void navigate();
+    }
+
     private final int OPEN_CAMERA_REQUEST = 1;
     private final int OPEN_GALLERY_REQUEST = 2;
 
     private boolean editInfoIsCurrentFragment = false;
-    private boolean isBackFromEditing = false;
+
 
     private int currentUserId;
 
@@ -66,16 +70,6 @@ public class MainActivity extends PermissionActivity
         drawerLayout = findViewById(R.id.main);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
-
-        navController.addOnNavigatedListener((controller, destination) -> {
-            if (isBackFromEditing) {
-                isBackFromEditing = false;
-            }
-            if (editInfoIsCurrentFragment) {
-                isBackFromEditing = true;
-            }
-        });
-
         setSupportActionBar(toolbar);
         NavigationUI.setupWithNavController(navView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
@@ -90,9 +84,8 @@ public class MainActivity extends PermissionActivity
         toggle.setToolbarNavigationClickListener(this::onToolbarNavigationClickListener);
 
 
-        String userId  = sessionController.getIdAuthorizedUser();
+        String userId = sessionController.getIdAuthorizedUser();
         if (userId != null) {
-
             currentUserId = Integer.valueOf(userId);
         } else {
             Intent intent = new Intent(this, AuthenticationActivity.class);
@@ -117,14 +110,33 @@ public class MainActivity extends PermissionActivity
 
     @Override
     public void onBackPressed() {
-        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragmentList) {
-            if (fragment instanceof NavHostFragment) {
-                List<Fragment> fragments = fragment.getChildFragmentManager().getFragments();
-
+        if (editInfoIsCurrentFragment) {
+            User changes = checkEditingForChange();
+            if (changes != null){
+                requestForSaveChanges(changes, super::onBackPressed);
             }
         }
-        super.onBackPressed();
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    private void requestForSaveChanges(User newUser, Navigatable navigatable){
+        final String positive = getResources().getString(R.string.positive_logout);
+        final String negative = getResources().getString(R.string.negative_logout);
+        final String title = getResources().getString(R.string.logout_description_for_dialog);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setPositiveButton(positive, (dialog, which) -> {
+                    saveChangesFromEditing(newUser);
+                    navigatable.navigate();
+                })
+                .setNegativeButton(negative, (dialog, which) -> {
+                    navigatable.navigate();
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 
@@ -138,7 +150,15 @@ public class MainActivity extends PermissionActivity
                 if (childFragments.get(0) instanceof UserInfoFragment) {
                     toggleNavigationDrawer(drawer);
                 } else {
-                    navController.popBackStack();
+                    if (editInfoIsCurrentFragment){
+                        User user = checkEditingForChange();
+                        if (user != null){
+                            requestForSaveChanges(user, navController::popBackStack);
+                        }
+                    }
+                    else {
+                        navController.popBackStack();
+                    }
                 }
             }
         }
@@ -159,7 +179,6 @@ public class MainActivity extends PermissionActivity
     public void onUserEditClick() {
         navController.navigate(R.id.user_edit);
         editInfoIsCurrentFragment = true;
-        isBackFromEditing = false;
     }
 
     @Override
@@ -193,6 +212,11 @@ public class MainActivity extends PermissionActivity
             view.setImageURI(uriForAvatar);
             view.setRotation(90);
         }
+    }
+
+    @Override
+    public void setCurrentFragmentIsEditing(boolean state) {
+        this.editInfoIsCurrentFragment = state;
     }
 
     @Override
@@ -255,28 +279,6 @@ public class MainActivity extends PermissionActivity
         alert.show();
     }
 
-    @Override
-    public boolean isReturnFromEditing() {
-        return isBackFromEditing;
-    }
-
-    @Override
-    public void checkAndSaveModifiedData(User user) {
-        User currentUser = userRepository.getUserById(currentUserId);
-        if (!currentUser.equals(user)) {
-            final String positive = getResources().getString(R.string.positive_logout);
-            final String negative = getResources().getString(R.string.negative_logout);
-            final String title = getResources().getString(R.string.change_data_request);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(title)
-                    .setPositiveButton(positive, (dialog, which) -> saveChangesFromEditing(user))
-                    .setNegativeButton(negative, (dialog, which) -> dialog.cancel());
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-    }
-
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, userAvatarManager.generateUriForSave().getPath());
@@ -290,7 +292,24 @@ public class MainActivity extends PermissionActivity
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 
-    private void tryUpdateUserInfoInFragment() {
+    private User checkEditingForChange() {
+        TextView firstNameView = findViewById(R.id.first_name_edit);
+        TextView lastNameView = findViewById(R.id.last_name_edit);
+        TextView phoneView = findViewById(R.id.phone_edit);
+        TextView emailView = findViewById(R.id.email_edit);
 
+        User user = userRepository.getUserById(currentUserId);
+        if (!user.getFirstName().contentEquals(firstNameView.getText()) ||
+                !user.getLastName().contentEquals(lastNameView.getText()) ||
+                !user.getEmail().contentEquals(emailView.getText()) ||
+                !user.getPhone().contentEquals(phoneView.getText())) {
+            return new User(
+                    firstNameView.getText().toString(),
+                    lastNameView.getText().toString(),
+                    phoneView.getText().toString(),
+                    emailView.getText().toString()
+            );
+        }
+        return null;
     }
 }
