@@ -91,7 +91,8 @@ public class UserSQLiteRepository implements UserRepository {
                 String phone = cursor.getString(ColumnsTable.phone.ordinal());
                 String email = cursor.getString(ColumnsTable.email.ordinal());
                 String password = cursor.getString(ColumnsTable.password.ordinal());
-                return new User(userId, firstName, lastName, email, phone, password);
+                String newsResource = cursor.getString(ColumnsTable.news_source.ordinal());
+                return new User(userId, firstName, lastName, email, phone, password, newsResource);
             }
             return null;
         }

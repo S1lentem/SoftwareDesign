@@ -11,12 +11,6 @@
                   <entry key="authorizationFragment">
                     <value>
                       <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_authorizationFragment_to_registrationFragment">
@@ -31,14 +25,7 @@
                   </entry>
                   <entry key="registrationFragment">
                     <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="265" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
+                      <LayoutPositions />
                     </value>
                   </entry>
                 </map>
@@ -81,7 +68,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="-248" />
-                            <option name="y" value="309" />
+                            <option name="y" value="295" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -104,8 +91,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-297" />
-                            <option name="y" value="627" />
+                            <option name="x" value="-252" />
+                            <option name="y" value="610" />
                           </Point>
                         </option>
                       </LayoutPositions>

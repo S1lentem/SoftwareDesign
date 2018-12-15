@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.RssFeedListAdapter;
 import com.example.artem.softwaredesign.data.models.RssFeed;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -35,7 +36,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class RssFragment extends Fragment {
     private Context context;
-
+    private OnFragmentRssListener onFragmentRssListener;
 
     private RecyclerView mRecyclerView;
     private EditText mEditText;
@@ -163,7 +164,6 @@ public class RssFragment extends Fragment {
                     isItem = false;
                 }
             }
-
             return items;
         } finally {
             inputStream.close();
@@ -173,6 +173,11 @@ public class RssFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String newsResources = onFragmentRssListener.getNewsResources();
+        if (newsResources == null || newsResources.equals("")){
+            onFragmentRssListener.redirectedToSettings();
+        }
+
         View view = inflater.inflate(R.layout.fragment_rss, container, false);
 
         mRecyclerView = view.findViewById(R.id.recyclerView);
@@ -182,14 +187,13 @@ public class RssFragment extends Fragment {
         mFeedTitleTextView = view.findViewById(R.id.feedTitle);
         mFeedDescriptionTextView = view.findViewById(R.id.feedDescription);
         mFeedLinkTextView = view.findViewById(R.id.feedLink);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         mFetchFeedButton.setOnClickListener(v -> new  FetchFeedTask().execute((Void) null));
         mSwipeLayout.setOnClickListener(v -> new  FetchFeedTask().execute((Void) null));
 
         return view;
-    }п
+    }
 
 
 
@@ -197,14 +201,13 @@ public class RssFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof  OnFragmentRssListener){
+            onFragmentRssListener = (OnFragmentRssListener) context;
+        }
+        else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentRssListener");
+        }
+
     }
-
-
-
 }

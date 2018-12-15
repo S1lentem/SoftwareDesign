@@ -61,6 +61,7 @@
     <string name="phone_label">Phone</string>
     <string name="password_label">Password</string>
     <string name="confirm_password_label">Confirm password</string>
+    <string name="news_resource_label">News resource</string>
 
     <!-- Fragments names -->
     <string name="user_info_fragment_title">User Info</string>
@@ -98,4 +99,6 @@
     <string name="massage_for_not_match_password">confirm password and password must match</string>
     <string name="message_for_email_not_found">User with this email does not exist</string>
     <string name="message_for_missing_password">Wrong password</string>
+
+
 </resources>

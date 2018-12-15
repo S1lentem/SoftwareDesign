@@ -10,14 +10,13 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
-import com.example.artem.softwaredesign.fragments.main.UserEditFragment;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
 import com.google.android.material.navigation.NavigationView;
@@ -30,7 +29,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-//import androidx.fragment.app.Fragment;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -38,9 +36,29 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends PermissionActivity
-        implements OnFragmentUserInfoListener, OnFragmentUserEditListener, OnFragmentNewSourceListener {
+        implements OnFragmentUserInfoListener, OnFragmentUserEditListener,
+        OnFragmentNewSourceListener, OnFragmentRssListener {
 
-    private interface Navigatable{
+    @Override
+    public String getNewsResources() {
+        return userRepository.getUserById(currentUserId).getNewsSource();
+    }
+
+    @Override
+    public void redirectedToSettings() {
+        navController.popBackStack();
+        navController.navigate(R.id.newSourceFragment);
+    }
+
+    @Override
+    public void saveNewsResources(String resource) {
+        User user = userRepository.getUserById(currentUserId);
+        user.setNewsSource(resource);
+        userRepository.savedUser(user);
+        navController.popBackStack();
+    }
+
+    private interface Navigable {
         void navigate();
     }
 
@@ -110,14 +128,6 @@ public class MainActivity extends PermissionActivity
 
 
     @Override
-    public void setNewsSourceForUser(String newsSource) {
-        User user = userRepository.getUserById(currentUserId);
-        user.setNewsSource(newsSource);
-        userRepository.savedUser(user);
-    }
-
-
-    @Override
     public void onBackPressed() {
         if (editInfoIsCurrentFragment) {
             User changes = checkEditingForChange();
@@ -130,7 +140,7 @@ public class MainActivity extends PermissionActivity
         }
     }
 
-    private void requestForSaveChanges(User newUser, Navigatable navigatable){
+    private void requestForSaveChanges(User newUser, Navigable navigatable){
         final String positive = getResources().getString(R.string.positive_logout);
         final String negative = getResources().getString(R.string.negative_logout);
         final String title = getResources().getString(R.string.logout_description_for_dialog);

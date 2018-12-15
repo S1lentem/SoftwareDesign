@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.NewSourceFragment">
+    tools:context=".fragments.NewSourceFragment"
+    android:orientation="vertical">
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -16,11 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:hint="@string/first_name_label"
+            android:hint="@string/news_resource_label"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/save_news_resource_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save_user_info"/>
