@@ -106,19 +106,6 @@ public class MainActivity extends PermissionActivity
 
         TextView emailTextView = headerView.findViewById(R.id.email_from_nav_header);
         emailTextView.setText(user.getEmail());
-
-
-        navController.addOnNavigatedListener((controller, destination) -> {
-            User currentUser = userRepository.getUserById(currentUserId);
-            Toast toast = Toast.makeText(this, currentUser.getNewsSource(), Toast.LENGTH_LONG);
-
-            if(destination.getId() == R.id.news && currentUser.getNewsSource().equals("")) {
-                controller.navigate(R.id.newSourceFragment);
-            }
-            else {
-                controller.navigate(destination.getId());
-            }
-        });
     }
 
 

@@ -8,7 +8,7 @@
             android:id="@+id/other_fragment"
             android:title="@string/first_page" />
         <item
-            android:id="@+id/news"
+            android:id="@+id/rssFragment"
             android:title="@string/second_page" />
     </group>
 </menu>
