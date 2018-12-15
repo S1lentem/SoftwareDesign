@@ -28,6 +28,7 @@
             android:inputType="textEmailAddress"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_for_authorization_text_input_layout"
         android:layout_width="match_parent"

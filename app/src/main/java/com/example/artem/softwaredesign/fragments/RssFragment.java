@@ -189,7 +189,7 @@ public class RssFragment extends Fragment {
         mSwipeLayout.setOnClickListener(v -> new  FetchFeedTask().execute((Void) null));
 
         return view;
-    }
+    }п
 
 
 
