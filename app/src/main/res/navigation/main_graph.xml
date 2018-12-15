@@ -41,6 +41,11 @@
         android:name="com.example.artem.softwaredesign.fragments.main.AboutFragment"
         android:label="@string/about_fragment_title"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/newSourceFragment"
+        android:name="com.example.artem.softwaredesign.fragments.NewSourceFragment"
+        android:label="fragment_new_source"
+        tools:layout="@layout/fragment_new_source" />
 
 
 </navigation>

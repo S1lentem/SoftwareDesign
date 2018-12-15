@@ -17,6 +17,7 @@ import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
 import com.example.artem.softwaredesign.fragments.main.UserEditFragment;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
 import com.google.android.material.navigation.NavigationView;
@@ -37,7 +38,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends PermissionActivity
-        implements OnFragmentUserInfoListener, OnFragmentUserEditListener {
+        implements OnFragmentUserInfoListener, OnFragmentUserEditListener, OnFragmentNewSourceListener {
 
     private interface Navigatable{
         void navigate();
@@ -105,6 +106,27 @@ public class MainActivity extends PermissionActivity
 
         TextView emailTextView = headerView.findViewById(R.id.email_from_nav_header);
         emailTextView.setText(user.getEmail());
+
+
+        navController.addOnNavigatedListener((controller, destination) -> {
+            User currentUser = userRepository.getUserById(currentUserId);
+            Toast toast = Toast.makeText(this, currentUser.getNewsSource(), Toast.LENGTH_LONG);
+
+            if(destination.getId() == R.id.news && currentUser.getNewsSource().equals("")) {
+                controller.navigate(R.id.newSourceFragment);
+            }
+            else {
+                controller.navigate(destination.getId());
+            }
+        });
+    }
+
+
+    @Override
+    public void setNewsSourceForUser(String newsSource) {
+        User user = userRepository.getUserById(currentUserId);
+        user.setNewsSource(newsSource);
+        userRepository.savedUser(user);
     }
 
 
@@ -299,16 +321,11 @@ public class MainActivity extends PermissionActivity
         TextView emailView = findViewById(R.id.email_edit);
 
         User user = userRepository.getUserById(currentUserId);
-        if (!user.getFirstName().contentEquals(firstNameView.getText()) ||
-                !user.getLastName().contentEquals(lastNameView.getText()) ||
-                !user.getEmail().contentEquals(emailView.getText()) ||
-                !user.getPhone().contentEquals(phoneView.getText())) {
-            return new User(
-                    firstNameView.getText().toString(),
-                    lastNameView.getText().toString(),
-                    phoneView.getText().toString(),
-                    emailView.getText().toString()
-            );
+        if (!user.getFirstName().contentEquals(firstNameView.getText()) || !user.getLastName().contentEquals(lastNameView.getText()) ||
+                !user.getEmail().contentEquals(emailView.getText()) || !user.getPhone().contentEquals(phoneView.getText())) {
+
+            return new User(firstNameView.getText().toString(), lastNameView.getText().toString(),
+                    phoneView.getText().toString(), emailView.getText().toString());
         }
         return null;
     }

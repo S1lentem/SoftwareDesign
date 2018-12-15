@@ -24,6 +24,7 @@ public class UserSQLiteRepository implements UserRepository {
         cv.put(ColumnsTable.last_name.toString(), user.getLastName());
         cv.put(ColumnsTable.phone.toString(), user.getPhone());
         cv.put(ColumnsTable.email.toString(), user.getEmail());
+        cv.put(ColumnsTable.news_source.toString(), user.getNewsSource());
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         try {
@@ -43,6 +44,7 @@ public class UserSQLiteRepository implements UserRepository {
         contentValues.put(ColumnsTable.phone.toString(), user.getPhone());
         contentValues.put(ColumnsTable.email.toString(), user.getEmail());
         contentValues.put(ColumnsTable.password.toString(), user.getPassword());
+        contentValues.put(ColumnsTable.news_source.toString(), user.getNewsSource());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         try {
             database.insert(dbHelper.getTableName(), null, contentValues);
@@ -65,7 +67,8 @@ public class UserSQLiteRepository implements UserRepository {
                 String lastName = cursor.getString(ColumnsTable.last_name.ordinal());
                 String phone = cursor.getString(ColumnsTable.phone.ordinal());
                 String password = cursor.getString(ColumnsTable.password.ordinal());
-                return new User(userId, firstName, lastName, email, phone, password);
+                String newSource = cursor.getString(ColumnsTable.news_source.ordinal());
+                return new User(userId, firstName, lastName, email, phone, password, newSource);
             }
             return null;
         }

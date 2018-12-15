@@ -7,12 +7,18 @@ public class User {
     private String email;
     private String phone;
     private String password;
+    private String newsSource;
 
     public User(String firsName, String lastName, String email, String phone){
         this.firstName = firsName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+    }
+
+    public User(int id, String firstName, String lastName, String email, String phone, String password, String newsSource){
+        this(id, firstName, lastName, email, phone, password);
+        this.newsSource = newsSource;
     }
 
     public User(int id, String firstName, String lastName, String email, String phone, String password){
@@ -45,6 +51,10 @@ public class User {
         return this.id;
     }
 
+    public String getNewsSource(){
+        return this.newsSource;
+    }
+
     @Override
     public boolean equals(Object object){
         if (!super.equals(object)){
@@ -63,5 +73,9 @@ public class User {
                 this.phone.equals(checkedUser.getPhone()) &&
                 this.email.equals(checkedUser.getEmail());
 
+    }
+
+    public void setNewsSource(String newsSource){
+        this.newsSource = newsSource;
     }
 }

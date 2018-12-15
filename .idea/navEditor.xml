@@ -63,6 +63,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="newSourceFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="30" />
+                            <option name="y" value="-318" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="news">
                     <value>
                       <LayoutPositions>
