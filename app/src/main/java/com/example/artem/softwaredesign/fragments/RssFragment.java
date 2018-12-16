@@ -39,12 +39,8 @@ public class RssFragment extends Fragment {
     private OnFragmentRssListener onFragmentRssListener;
 
     private RecyclerView mRecyclerView;
-    private EditText mEditText;
-    private Button mFetchFeedButton;
     private SwipeRefreshLayout mSwipeLayout;
-    private TextView mFeedTitleTextView;
-    private TextView mFeedLinkTextView;
-    private TextView mFeedDescriptionTextView;
+
 
     private List<RssFeed> mFeedModelList;
     private String mFeedTitle;
@@ -86,9 +82,9 @@ public class RssFragment extends Fragment {
             mSwipeLayout.setRefreshing(false);
 
             if (success) {
-                mFeedTitleTextView.setText("Feed Title: " + mFeedTitle);
-                mFeedDescriptionTextView.setText("Feed Description: " + mFeedDescription);
-                mFeedLinkTextView.setText("Feed Link: " + mFeedLink);
+//                mFeedTitleTextView.setText("Feed Title: " + mFeedTitle);
+//                mFeedDescriptionTextView.setText("Feed Description: " + mFeedDescription);
+//                mFeedLinkTextView.setText("Feed Link: " + mFeedLink);
                 // Fill RecyclerView
                 mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
             } else {
@@ -102,6 +98,7 @@ public class RssFragment extends Fragment {
         String title = null;
         String link = null;
         String description = null;
+        String date = null;
         boolean isItem = false;
         List<RssFeed> items = new ArrayList<RssFeed>();
 
@@ -146,10 +143,13 @@ public class RssFragment extends Fragment {
                 } else if (name.equalsIgnoreCase("description")) {
                     description = result;
                 }
+                else if (name.equalsIgnoreCase("pubDate")){
+                    date = result;
+                }
 
-                if (title != null && link != null && description != null) {
+                if (title != null && link != null && description != null && date != null) {
                     if(isItem) {
-                        RssFeed item = new RssFeed(title, link, description);
+                        RssFeed item = new RssFeed(title, link, description, date);
                         items.add(item);
                     }
                     else {
@@ -161,6 +161,7 @@ public class RssFragment extends Fragment {
                     title = null;
                     link = null;
                     description = null;
+                    date = null;
                     isItem = false;
                 }
             }
@@ -181,16 +182,11 @@ public class RssFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_rss, container, false);
 
         mRecyclerView = view.findViewById(R.id.recyclerView);
-        mEditText = view.findViewById(R.id.rssFeedEditText);
-        mFetchFeedButton = view.findViewById(R.id.fetchFeedButton);
         mSwipeLayout = view.findViewById(R.id.swipeRefreshLayout);
-        mFeedTitleTextView = view.findViewById(R.id.feedTitle);
-        mFeedDescriptionTextView = view.findViewById(R.id.feedDescription);
-        mFeedLinkTextView = view.findViewById(R.id.feedLink);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        mFetchFeedButton.setOnClickListener(v -> new  FetchFeedTask().execute((Void) null));
         mSwipeLayout.setOnClickListener(v -> new  FetchFeedTask().execute((Void) null));
+        new  FetchFeedTask().execute((Void) null);
 
         return view;
     }

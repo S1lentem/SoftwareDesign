@@ -44,7 +44,7 @@ public class RssFeedListAdapter
         ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(rssFeedModel.getTitle());
         ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText))
                 .setText(rssFeedModel.getDescription());
-        ((TextView)holder.rssFeedView.findViewById(R.id.linkText)).setText(rssFeedModel.getLink());
+        ((TextView)holder.rssFeedView.findViewById(R.id.dateText)).setText(rssFeedModel.getDate());
     }
 
     @Override
