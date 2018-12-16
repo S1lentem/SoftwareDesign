@@ -27,6 +27,7 @@
     <string name="second_page">News</string>
     <string name="imei_info">IMEI info</string>
     <string name="group_for_other">Other</string>
+    <string name="settings_menu_component">Settings</string>
     <string name="logout">LogOut</string>
 
     <string name="about">About</string>

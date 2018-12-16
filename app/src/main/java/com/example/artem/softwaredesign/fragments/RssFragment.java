@@ -59,7 +59,7 @@ public class RssFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             mSwipeLayout.setRefreshing(true);
-            urlLink = mEditText.getText().toString();
+            urlLink = onFragmentRssListener.getNewsResources();
         }
 
         @Override
