@@ -32,6 +32,8 @@ public class NewSourceFragment extends Fragment {
         newsSourceTextView = view.findViewById(R.id.first_news_source);
         newsSourceTextInputLayout = view.findViewById(R.id.first_news_source_text_input_layout);
 
+        String resource = onFragmentNewSourceListener.getUser().getNewsSource();
+        newsSourceTextView.setText(resource != null ? resource : "");
         view.findViewById(R.id.save_news_resource_button).setOnClickListener(v ->{
             if (isValidSource()){
                 onFragmentNewSourceListener.saveNewsResources(newsSourceTextView.getText().toString());
