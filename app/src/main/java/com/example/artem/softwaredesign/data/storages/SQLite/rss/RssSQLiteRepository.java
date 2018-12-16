@@ -6,11 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.artem.softwaredesign.data.models.RssFeed;
+import com.example.artem.softwaredesign.interfaces.RssRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RssSQLiteRepository {
+public class RssSQLiteRepository implements RssRepository {
     private final RssDbHelper rssDbHelper;
 
     public RssSQLiteRepository(Context context){

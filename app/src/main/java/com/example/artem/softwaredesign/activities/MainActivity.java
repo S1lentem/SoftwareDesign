@@ -18,9 +18,12 @@ import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.CheckInternetAsyncTask;
+import com.example.artem.softwaredesign.data.models.RssFeed;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
+import com.example.artem.softwaredesign.data.storages.SQLite.rss.RssSQLiteRepository;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
+import com.example.artem.softwaredesign.interfaces.RssRepository;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
@@ -48,25 +51,6 @@ public class MainActivity extends PermissionActivity
         implements OnFragmentUserInfoListener, OnFragmentUserEditListener,
         OnFragmentNewSourceListener, OnFragmentRssListener {
 
-    @Override
-    public String getNewsResources() {
-        return userRepository.getUserById(currentUserId).getNewsSource();
-    }
-
-    @Override
-    public void redirectedToSettings() {
-        navController.popBackStack();
-        navController.navigate(R.id.newSourceFragment);
-    }
-
-    @Override
-    public void saveNewsResources(String resource) {
-        User user = userRepository.getUserById(currentUserId);
-        user.setNewsSource(resource);
-        userRepository.savedUser(user);
-        navController.popBackStack();
-    }
-
     private interface Navigable {
         void navigate();
     }
@@ -81,6 +65,8 @@ public class MainActivity extends PermissionActivity
 
     private UserImageManager userAvatarManager;
     private NavController navController;
+    private RssRepository rssRepository;
+
 
     private DrawerLayout drawerLayout;
 
@@ -90,6 +76,7 @@ public class MainActivity extends PermissionActivity
         setContentView(R.layout.activity_main);
 
         userAvatarManager = new UserImageManager(this);
+        rssRepository = new RssSQLiteRepository(this);
 
         NavigationView navView = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -146,10 +133,40 @@ public class MainActivity extends PermissionActivity
             if (changes != null) {
                 requestForSaveChanges(changes, super::onBackPressed);
             }
+            else {
+                super.onBackPressed();
+            }
         } else {
             super.onBackPressed();
         }
     }
+
+    @Override
+    public String getNewsResources() {
+        return userRepository.getUserById(currentUserId).getNewsSource();
+    }
+
+    @Override
+    public void redirectedToSettings() {
+        navController.popBackStack();
+        navController.navigate(R.id.newSourceFragment);
+    }
+
+    @Override
+    public void saveRssInCache(List<RssFeed> feeds) {
+        for (RssFeed feed: feeds) {
+            rssRepository.addRss(feed);
+        }
+    }
+
+    @Override
+    public void saveNewsResources(String resource) {
+        User user = userRepository.getUserById(currentUserId);
+        user.setNewsSource(resource);
+        userRepository.savedUser(user);
+        navController.popBackStack();
+    }
+
 
     private void requestForSaveChanges(User newUser, Navigable navigatable) {
         final String positive = getResources().getString(R.string.positive_logout);

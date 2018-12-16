@@ -39,12 +39,7 @@ public class RssFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeLayout;
 
-
     private List<RssFeed> mFeedModelList;
-    private String mFeedTitle;
-    private String mFeedLink;
-    private String mFeedDescription;
-
 
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -68,6 +63,7 @@ public class RssFragment extends Fragment {
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
                 mFeedModelList = parseFeed(inputStream);
+                onFragmentRssListener.saveRssInCache(mFeedModelList.subList(0, 10));
                 return true;
             } catch (IOException | XmlPullParserException e) {
                 Log.e("Error", e.getMessage());
@@ -80,10 +76,6 @@ public class RssFragment extends Fragment {
             mSwipeLayout.setRefreshing(false);
 
             if (success) {
-//                mFeedTitleTextView.setText("Feed Title: " + mFeedTitle);
-//                mFeedDescriptionTextView.setText("Feed Description: " + mFeedDescription);
-//                mFeedLinkTextView.setText("Feed Link: " + mFeedLink);
-                // Fill RecyclerView
                 mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
             } else {
                 Toast.makeText(context, "Enter a valid Rss feed url", Toast.LENGTH_LONG).show();
@@ -151,12 +143,6 @@ public class RssFragment extends Fragment {
                         RssFeed item = new RssFeed(title, link, parser.getText(), date);
                         items.add(item);
                     }
-                    else {
-                        mFeedTitle = title;
-                        mFeedLink = link;
-                        mFeedDescription = description;
-                    }
-
                     title = null;
                     link = null;
                     description = null;

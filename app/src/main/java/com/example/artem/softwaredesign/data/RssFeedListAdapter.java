@@ -23,6 +23,7 @@ public class RssFeedListAdapter
         public FeedModelViewHolder(View v) {
             super(v);
             rssFeedView = v;
+
         }
     }
 
