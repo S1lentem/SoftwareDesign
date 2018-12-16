@@ -9,12 +9,10 @@ import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.HtmlConverter;
 import com.example.artem.softwaredesign.data.RssFeedListAdapter;
 import com.example.artem.softwaredesign.data.models.RssFeed;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
@@ -93,7 +91,7 @@ public class RssFragment extends Fragment {
         }
     }
 
-    public List<RssFeed> parseFeed(InputStream inputStream) throws XmlPullParserException,
+    private List<RssFeed> parseFeed(InputStream inputStream) throws XmlPullParserException,
             IOException {
         String title = null;
         String link = null;
@@ -149,7 +147,8 @@ public class RssFragment extends Fragment {
 
                 if (title != null && link != null && description != null && date != null) {
                     if(isItem) {
-                        RssFeed item = new RssFeed(title, link, description, date);
+                        HtmlConverter parser = new HtmlConverter(description);
+                        RssFeed item = new RssFeed(title, link, parser.getText(), date);
                         items.add(item);
                     }
                     else {
