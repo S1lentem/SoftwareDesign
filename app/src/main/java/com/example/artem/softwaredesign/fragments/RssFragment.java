@@ -1,6 +1,8 @@
 package com.example.artem.softwaredesign.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -76,7 +78,7 @@ public class RssFragment extends Fragment {
             mSwipeLayout.setRefreshing(false);
 
             if (success) {
-                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
             } else {
                 Toast.makeText(context, "Enter a valid Rss feed url", Toast.LENGTH_LONG).show();
             }
@@ -89,6 +91,7 @@ public class RssFragment extends Fragment {
         String link = null;
         String description = null;
         String date = null;
+        String url = null;
         boolean isItem = false;
         List<RssFeed> items = new ArrayList<RssFeed>();
 
@@ -136,17 +139,21 @@ public class RssFragment extends Fragment {
                 else if (name.equalsIgnoreCase("pubDate")){
                     date = result;
                 }
+                else if (name.equalsIgnoreCase("enclosure")){
+                    url = xmlPullParser.getAttributeValue("", "url");
+                }
 
                 if (title != null && link != null && description != null && date != null) {
                     if(isItem) {
                         HtmlConverter parser = new HtmlConverter(description);
-                        RssFeed item = new RssFeed(title, link, parser.getText(), date);
+                        RssFeed item = new RssFeed(title, link, parser.getText(), date, url);
                         items.add(item);
                     }
                     title = null;
                     link = null;
                     description = null;
                     date = null;
+                    url = null;
                     isItem = false;
                 }
             }
@@ -170,8 +177,13 @@ public class RssFragment extends Fragment {
         mSwipeLayout = view.findViewById(R.id.swipeRefreshLayout);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        mSwipeLayout.setOnClickListener(v -> new  FetchFeedTask().execute((Void) null));
-        new  FetchFeedTask().execute((Void) null);
+        if (isOnline()) {
+            mSwipeLayout.setOnClickListener(v -> new FetchFeedTask().execute((Void) null));
+            new FetchFeedTask().execute((Void) null);
+        } else {
+            mRecyclerView.setAdapter(
+                    new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
+        }
 
         return view;
     }
@@ -189,6 +201,12 @@ public class RssFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentRssListener");
         }
+    }
+
+    private Boolean isOnline(){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
 
     }
 }

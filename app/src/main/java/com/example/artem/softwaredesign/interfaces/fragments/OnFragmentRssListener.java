@@ -8,4 +8,5 @@ public interface OnFragmentRssListener {
     String getNewsResources();
     void redirectedToSettings();
     void saveRssInCache(List<RssFeed> feeds);
+    List<RssFeed> getRssFromCache();
 }

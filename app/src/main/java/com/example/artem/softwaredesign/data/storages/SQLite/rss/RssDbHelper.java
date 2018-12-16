@@ -20,7 +20,8 @@ public class RssDbHelper extends SQLiteOpenHelper {
                 + RssColumnsTable.title + " text,"
                 + RssColumnsTable.description + " text,"
                 + RssColumnsTable.link + " text,"
-                + RssColumnsTable.date + " text" + ");");
+                + RssColumnsTable.date + " text,"
+                + RssColumnsTable.url + " text" + ");");
     }
 
     @Override

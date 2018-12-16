@@ -5,5 +5,6 @@ public enum RssColumnsTable {
     title,
     description,
     link,
-    date
+    date,
+    url
 }

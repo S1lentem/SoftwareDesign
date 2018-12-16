@@ -14,6 +14,7 @@
             android:orientation="vertical">
             
             <ImageView
+                android:id="@+id/imageFeed"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:scaleType="centerCrop"

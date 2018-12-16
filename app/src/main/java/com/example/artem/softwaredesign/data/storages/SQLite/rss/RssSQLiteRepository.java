@@ -30,7 +30,8 @@ public class RssSQLiteRepository implements RssRepository {
                 String description = cursor.getString(RssColumnsTable.description.ordinal());
                 String link = cursor.getString(RssColumnsTable.link.ordinal());
                 String date = cursor.getString(RssColumnsTable.date.ordinal());
-                allRssFeed.add(new RssFeed(title, description, link, date));
+                String url = cursor.getString(RssColumnsTable.url.ordinal());
+                allRssFeed.add(new RssFeed(title, description, link, date, url));
             }
         }
         return allRssFeed;
@@ -44,8 +45,16 @@ public class RssSQLiteRepository implements RssRepository {
             contentValues.put(RssColumnsTable.description.toString(), rssFeed.getDescription());
             contentValues.put(RssColumnsTable.link.toString(), rssFeed.getLink());
             contentValues.put(RssColumnsTable.date.toString(), rssFeed.getDate());
+            contentValues.put(RssColumnsTable.url.toString(), rssFeed.getUrl());
 
             db.insert(rssDbHelper.getTableName(), null, contentValues);
+        }
+    }
+
+    @Override
+    public void clearCache() {
+        try (SQLiteDatabase db = rssDbHelper.getReadableDatabase()){
+            db.delete(rssDbHelper.getTableName(), null, null);
         }
     }
 }

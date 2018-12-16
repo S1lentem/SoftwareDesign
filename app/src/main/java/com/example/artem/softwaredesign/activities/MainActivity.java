@@ -59,7 +59,7 @@ public class MainActivity extends PermissionActivity
     private final int OPEN_GALLERY_REQUEST = 2;
 
     private boolean editInfoIsCurrentFragment = false;
-
+    private boolean isChangePhoto = false;
 
     private int currentUserId;
 
@@ -154,9 +154,15 @@ public class MainActivity extends PermissionActivity
 
     @Override
     public void saveRssInCache(List<RssFeed> feeds) {
+        rssRepository.clearCache();
         for (RssFeed feed: feeds) {
             rssRepository.addRss(feed);
         }
+    }
+
+    @Override
+    public List<RssFeed> getRssFromCache() {
+        return rssRepository.getAllFeedFromCache();
     }
 
     @Override
@@ -286,6 +292,7 @@ public class MainActivity extends PermissionActivity
                         avatar = (Bitmap) data.getExtras().get("data");
                         viewForAvatar.setImageBitmap(avatar);
                         viewForAvatar.setRotation(90);
+                        isChangePhoto = true;
                     }
                 }
                 break;
@@ -296,6 +303,7 @@ public class MainActivity extends PermissionActivity
                         avatar = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
                         viewForAvatar.setImageBitmap(avatar);
                         viewForAvatar.setRotation(90);
+                        isChangePhoto = true;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

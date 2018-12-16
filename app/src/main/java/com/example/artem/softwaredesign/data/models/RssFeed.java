@@ -5,6 +5,7 @@ public class RssFeed {
     private String link;
     private String description;
     private String date;
+    private String url;
 
     public RssFeed(String title, String link, String description) {
         this.title = title;
@@ -15,6 +16,11 @@ public class RssFeed {
     public RssFeed(String title, String link, String description, String date){
         this(title, link, description);
         this.date = date;
+    }
+
+    public RssFeed(String title, String link, String description, String date, String url){
+        this(title, link, description, date);
+        this.url = url;
     }
 
     public String getTitle() {
@@ -31,5 +37,9 @@ public class RssFeed {
 
     public String getDate() {
         return date;
+    }
+
+    public String getUrl() {
+        return url;
     }
 }
