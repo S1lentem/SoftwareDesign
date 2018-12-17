@@ -11,8 +11,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
+import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.fragment.app.Fragment;
 
@@ -24,6 +26,7 @@ public class UserEditFragment extends Fragment {
     private EditText emailEditText;
 
     private ImageView avatarView;
+    private TextInputLayout emaileTextInputLayout;
 
     private OnFragmentUserEditListener onFragmentUserEditListener;
 
@@ -36,8 +39,11 @@ public class UserEditFragment extends Fragment {
         parentContainer.findViewById(R.id.save_user_info_button)
                 .setOnClickListener(v -> saveChanges());
 
+
+
         onFragmentUserEditListener.loadUserAvatar(avatarView);
         avatarView.setOnClickListener(v -> onFragmentUserEditListener.onPhotoUserClick());
+
 
         if(savedInstanceState != null) {
             Bitmap bitmap = savedInstanceState.getParcelable("image");
@@ -70,6 +76,7 @@ public class UserEditFragment extends Fragment {
         phoneEditText = parentContainer.findViewById(R.id.phone_edit);
         phoneEditText.setText(user.getPhone());
 
+        emaileTextInputLayout = parentContainer.findViewById(R.id.edit_email_text_input_layout);
         emailEditText = parentContainer.findViewById(R.id.email_edit);
         emailEditText.setText(user.getEmail());
     }
@@ -82,17 +89,25 @@ public class UserEditFragment extends Fragment {
     }
 
     private User getUserFromEditForm(){
+        User user = onFragmentUserEditListener.getUser();
         return new User(
+                user.getId(),
                 firstNameEditText.getText().toString(),
                 lastNameEditText.getText().toString(),
                 emailEditText.getText().toString(),
-                phoneEditText.getText().toString()
+                phoneEditText.getText().toString(),
+                user.getPassword()
         );
     }
 
     private void saveChanges(){
         Bitmap avatar = ((BitmapDrawable) avatarView.getDrawable()).getBitmap();
-        onFragmentUserEditListener.saveChangesFromEditing(getUserFromEditForm(), avatar);
+        try {
+            onFragmentUserEditListener.saveChangesFromEditing(getUserFromEditForm(), avatar);
+        } catch (EmailAlreadyTakenException ex){
+            emaileTextInputLayout.setError(String.format(
+                    getResources().getString(R.string.message_for_already_email), ex.getEmail()));
+        }
     }
 
     @Override
