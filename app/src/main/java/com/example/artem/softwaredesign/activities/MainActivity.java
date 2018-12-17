@@ -59,7 +59,9 @@ public class MainActivity extends PermissionActivity
     private final int OPEN_GALLERY_REQUEST = 2;
 
     private boolean editInfoIsCurrentFragment = false;
-    private boolean isChangePhoto = false;
+
+    private boolean isChangeAvatar = false;
+
 
     private int currentUserId;
 
@@ -132,8 +134,7 @@ public class MainActivity extends PermissionActivity
             User changes = checkEditingForChange();
             if (changes != null) {
                 requestForSaveChanges(changes, super::onBackPressed);
-            }
-            else {
+            } else {
                 super.onBackPressed();
             }
         } else {
@@ -182,7 +183,7 @@ public class MainActivity extends PermissionActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setPositiveButton(positive, (dialog, which) -> {
-                    saveChangesFromEditing(newUser);
+                    saveUserInfo(newUser, getNewAvatar());
                     navigatable.navigate();
                 })
                 .setNegativeButton(negative, (dialog, which) -> {
@@ -207,6 +208,8 @@ public class MainActivity extends PermissionActivity
                         User user = checkEditingForChange();
                         if (user != null) {
                             requestForSaveChanges(user, navController::popBackStack);
+                        } else {
+                            navController.popBackStack();
                         }
                     } else {
                         navController.popBackStack();
@@ -231,6 +234,7 @@ public class MainActivity extends PermissionActivity
     public void onUserEditClick() {
         navController.navigate(R.id.user_edit);
         editInfoIsCurrentFragment = true;
+        isChangeAvatar = false;
     }
 
     @Override
@@ -272,11 +276,8 @@ public class MainActivity extends PermissionActivity
     }
 
     @Override
-    public void saveChangesFromEditing(User user) {
-        final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
-        Bitmap avatar = ((BitmapDrawable) viewForAvatar.getDrawable()).getBitmap();
-        userRepository.savedUser(user);
-        userAvatarManager.updateAvatar(avatar);
+    public void saveChangesFromEditing(User user, Bitmap avatar) {
+        saveUserInfo(user, avatar);
         navController.popBackStack();
     }
 
@@ -292,7 +293,7 @@ public class MainActivity extends PermissionActivity
                         avatar = (Bitmap) data.getExtras().get("data");
                         viewForAvatar.setImageBitmap(avatar);
                         viewForAvatar.setRotation(90);
-                        isChangePhoto = true;
+                        isChangeAvatar = true;
                     }
                 }
                 break;
@@ -303,7 +304,7 @@ public class MainActivity extends PermissionActivity
                         avatar = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
                         viewForAvatar.setImageBitmap(avatar);
                         viewForAvatar.setRotation(90);
-                        isChangePhoto = true;
+                        isChangeAvatar = true;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -346,6 +347,15 @@ public class MainActivity extends PermissionActivity
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 
+    private void saveUserInfo(User user, Bitmap avatar){
+        userRepository.savedUser(user);
+        if (isChangeAvatar) {
+            userAvatarManager.updateAvatar(avatar);
+        }
+        updateHeader(user);
+        isChangeAvatar = false;
+    }
+
     private User checkEditingForChange() {
         TextView firstNameView = findViewById(R.id.first_name_edit);
         TextView lastNameView = findViewById(R.id.last_name_edit);
@@ -353,13 +363,34 @@ public class MainActivity extends PermissionActivity
         TextView emailView = findViewById(R.id.email_edit);
 
         User user = userRepository.getUserById(currentUserId);
-        if (!user.getFirstName().contentEquals(firstNameView.getText()) || !user.getLastName().contentEquals(lastNameView.getText()) ||
-                !user.getEmail().contentEquals(emailView.getText()) || !user.getPhone().contentEquals(phoneView.getText())) {
 
-            return new User(firstNameView.getText().toString(), lastNameView.getText().toString(),
-                    phoneView.getText().toString(), emailView.getText().toString());
+        if (!user.getFirstName().contentEquals(firstNameView.getText()) ||
+                !user.getLastName().contentEquals(lastNameView.getText()) ||
+                !user.getEmail().contentEquals(emailView.getText()) ||
+                !user.getPhone().contentEquals(phoneView.getText()) || isChangeAvatar) {
+            return new User(
+                    firstNameView.getText().toString(),
+                    lastNameView.getText().toString(),
+                    phoneView.getText().toString(),
+                    emailView.getText().toString()
+            );
         }
         return null;
     }
 
+
+    private Bitmap getNewAvatar(){
+        final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
+        return  ((BitmapDrawable) viewForAvatar.getDrawable()).getBitmap();
+    }
+
+    private void updateHeader(User user){
+        NavigationView navView = findViewById(R.id.nav_view);
+        View headerView = navView.getHeaderView(0);
+        loadUserAvatar(headerView.findViewById(R.id.image_from_nav_header));
+        TextView nameTextView = headerView.findViewById(R.id.first_name_from_nav_header);
+        nameTextView.setText(user.getFirstName());
+        TextView emailTextView = headerView.findViewById(R.id.email_from_nav_header);
+        emailTextView.setText(user.getEmail());
+    }
 }
