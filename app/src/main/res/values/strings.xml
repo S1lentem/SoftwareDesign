@@ -98,4 +98,5 @@
     <string name="massage_for_not_match_password">confirm password and password must match</string>
     <string name="message_for_email_not_found">User with this email does not exist</string>
     <string name="message_for_missing_password">Wrong password</string>
+    <string name="message_for_already_email">The user with the e-mail: %s is already registered</string>
 </resources>

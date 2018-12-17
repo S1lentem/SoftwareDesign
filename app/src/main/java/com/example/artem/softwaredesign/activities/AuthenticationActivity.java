@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.crypto.EncryptionAlgorithm;
 import com.example.artem.softwaredesign.data.crypto.HashManager;
+import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.exceptions.EmailNotFoundException;
 import com.example.artem.softwaredesign.data.exceptions.PasswordDoesNotMatchException;
 import com.example.artem.softwaredesign.data.models.User;
@@ -77,7 +78,10 @@ public class AuthenticationActivity extends UserStorageActivity
 
     @Override
     public void onRegistrationButtonClick(String firstName, String lastName, String email,
-                                          String phone, String password) {
+                                          String phone, String password) throws EmailAlreadyTakenException {
+        if (userRepository.getUserByEmail(email) != null){
+            throw new EmailAlreadyTakenException(email);
+        }
         User user = new User(0, firstName, lastName, email, phone, hashManager.getHash(password));
         userRepository.addUser(user);
         int id = userRepository.getUserByEmail(user.getEmail()).getId();
