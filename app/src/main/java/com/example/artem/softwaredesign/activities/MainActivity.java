@@ -4,20 +4,14 @@ package com.example.artem.softwaredesign.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.data.CheckInternetAsyncTask;
 import com.example.artem.softwaredesign.data.models.RssFeed;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
@@ -31,9 +25,6 @@ import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoL
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.List;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -122,9 +113,6 @@ public class MainActivity extends PermissionActivity
 
         TextView emailTextView = headerView.findViewById(R.id.email_from_nav_header);
         emailTextView.setText(user.getEmail());
-
-
-        new CheckInternetAsyncTask(this).execute();
     }
 
 
