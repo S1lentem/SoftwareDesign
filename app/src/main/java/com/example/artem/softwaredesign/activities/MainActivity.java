@@ -251,6 +251,7 @@ public class MainActivity extends PermissionActivity
                     Intent intent = new Intent(this, AuthenticationActivity.class);
                     intent.putExtra(IS_LOGOUT_KEY, currentUserId);
                     startActivity(intent);
+                    rssRepository.clearCache();
                     finish();
                 })
                 .setNegativeButton(negative, (dialog, which) -> dialog.cancel());

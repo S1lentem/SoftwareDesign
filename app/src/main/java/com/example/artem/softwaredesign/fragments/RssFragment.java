@@ -177,14 +177,18 @@ public class RssFragment extends Fragment {
         mSwipeLayout = view.findViewById(R.id.swipeRefreshLayout);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
+        String message;
         if (isOnline()) {
+            message = getResources().getString(R.string.online_message);
             mSwipeLayout.setOnRefreshListener(() -> new FetchFeedTask().execute((Void) null));
             new FetchFeedTask().execute((Void) null);
         } else {
+            message = getResources().getString(R.string.offline_message);
             mSwipeLayout.setOnRefreshListener(()->{});
             mRecyclerView.setAdapter(
                     new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
         }
+        Toast toast = Toast.makeText((Context) onFragmentRssListener, message,Toast.LENGTH_LONG);
 
         return view;
     }

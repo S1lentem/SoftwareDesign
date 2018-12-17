@@ -102,4 +102,9 @@
     <string name="message_for_missing_password">Wrong password</string>
 
     <string name="message_for_already_email">The user with the e-mail: %s is already registered</string>
+
+    <!-- Checking online -->
+    <string name="online_message">You are online</string>
+    <string name="offline_message">You are offline. All news will be taken from the cache</string>
+
 </resources>
