@@ -1,6 +1,8 @@
 package com.example.artem.softwaredesign.fragments.main;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +38,11 @@ public class UserEditFragment extends Fragment {
 
         onFragmentUserEditListener.loadUserAvatar(avatarView);
         avatarView.setOnClickListener(v -> onFragmentUserEditListener.onPhotoUserClick());
+
+        if(savedInstanceState != null) {
+            Bitmap bitmap = savedInstanceState.getParcelable("image");
+            avatarView.setImageBitmap(bitmap);
+        }
 
         return parentContainer;
     }
@@ -78,18 +85,27 @@ public class UserEditFragment extends Fragment {
         return new User(
                 firstNameEditText.getText().toString(),
                 lastNameEditText.getText().toString(),
-                phoneEditText.getText().toString(),
-                emailEditText.getText().toString()
+                emailEditText.getText().toString(),
+                phoneEditText.getText().toString()
         );
     }
 
     private void saveChanges(){
-        onFragmentUserEditListener.saveChangesFromEditing(getUserFromEditForm());
+        Bitmap avatar = ((BitmapDrawable) avatarView.getDrawable()).getBitmap();
+        onFragmentUserEditListener.saveChangesFromEditing(getUserFromEditForm(), avatar);
     }
 
     @Override
     public void onPause() {
         onFragmentUserEditListener.setCurrentFragmentIsEditing(false);
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        BitmapDrawable drawable = (BitmapDrawable) avatarView.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        outState.putParcelable("image", bitmap);
+        super.onSaveInstanceState(outState);
     }
 }
