@@ -178,9 +178,10 @@ public class RssFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         if (isOnline()) {
-            mSwipeLayout.setOnClickListener(v -> new FetchFeedTask().execute((Void) null));
+            mSwipeLayout.setOnRefreshListener(() -> new FetchFeedTask().execute((Void) null));
             new FetchFeedTask().execute((Void) null);
         } else {
+            mSwipeLayout.setOnRefreshListener(()->{});
             mRecyclerView.setAdapter(
                     new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
         }

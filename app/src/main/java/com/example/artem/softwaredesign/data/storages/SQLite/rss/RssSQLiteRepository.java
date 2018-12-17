@@ -31,7 +31,7 @@ public class RssSQLiteRepository implements RssRepository {
                 String link = cursor.getString(RssColumnsTable.link.ordinal());
                 String date = cursor.getString(RssColumnsTable.date.ordinal());
                 String url = cursor.getString(RssColumnsTable.url.ordinal());
-                allRssFeed.add(new RssFeed(title, description, link, date, url));
+                allRssFeed.add(new RssFeed(title, link, description, date, url));
             }
         }
         return allRssFeed;
