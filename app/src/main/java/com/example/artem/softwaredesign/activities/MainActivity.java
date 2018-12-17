@@ -10,9 +10,13 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.models.RssFeed;
+
+import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
+
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
 import com.example.artem.softwaredesign.data.storages.SQLite.rss.RssSQLiteRepository;
@@ -171,8 +175,18 @@ public class MainActivity extends PermissionActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setPositiveButton(positive, (dialog, which) -> {
-                    saveUserInfo(newUser, getNewAvatar());
-                    navigatable.navigate();
+                    try {
+                        saveUserInfo(newUser, getNewAvatar());
+                        navigatable.navigate();
+                    } catch (EmailAlreadyTakenException ex){
+                        Toast toast = Toast.makeText(this,
+                                String.format(getResources().getString(R.string.message_for_already_email),
+                                        ex.getEmail()),
+                                Toast.LENGTH_LONG);
+                        toast.show();
+                        navigatable.navigate();
+                    }
+
                 })
                 .setNegativeButton(negative, (dialog, which) -> {
                     navigatable.navigate();
@@ -264,7 +278,7 @@ public class MainActivity extends PermissionActivity
     }
 
     @Override
-    public void saveChangesFromEditing(User user, Bitmap avatar) {
+    public void saveChangesFromEditing(User user, Bitmap avatar) throws EmailAlreadyTakenException {
         saveUserInfo(user, avatar);
         navController.popBackStack();
     }
@@ -335,7 +349,12 @@ public class MainActivity extends PermissionActivity
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 
-    private void saveUserInfo(User user, Bitmap avatar){
+    private void saveUserInfo(User user, Bitmap avatar) throws EmailAlreadyTakenException {
+        User testUser = userRepository.getUserByEmail(user.getEmail());
+        if (testUser != null && user.getId() != testUser.getId()){
+            throw new EmailAlreadyTakenException(user.getEmail());
+        }
+
         userRepository.savedUser(user);
         if (isChangeAvatar) {
             userAvatarManager.updateAvatar(avatar);

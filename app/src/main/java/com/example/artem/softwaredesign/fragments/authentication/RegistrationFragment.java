@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAuthorizationListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRegistrationListener;
@@ -98,13 +99,20 @@ public class RegistrationFragment extends Fragment {
     }
 
     private void createNewUser(){
-        if (isValidForm()){
-            onFragmentAuthorizationListener.onRegistrationButtonClick(
-                    firsNameEditText.getText().toString(),
-                    lastNameEditText.getText().toString(),
-                    emailEditText.getText().toString(),
-                    phoneEditText.getText().toString(),
-                    passwordEditText.getText().toString());
+        if (isValidForm()) {
+            try {
+                onFragmentAuthorizationListener.onRegistrationButtonClick(
+                        firsNameEditText.getText().toString(),
+                        lastNameEditText.getText().toString(),
+                        emailEditText.getText().toString(),
+                        phoneEditText.getText().toString(),
+                        passwordEditText.getText().toString());
+            }
+            catch (EmailAlreadyTakenException ex){
+                emailTextInputLayout.setError(String.format(
+                        getResources().getString(R.string.message_for_already_email),
+                        ex.getEmail()));
+            }
         }
     }
 
