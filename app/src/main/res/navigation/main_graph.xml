@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/user_info_fragment">
+
+    <fragment
+        android:id="@+id/user_info_fragment"
+        android:name="com.example.artem.softwaredesign.fragments.UserInfoFragment"
+        android:label="@string/user_info_fragment_title"
+        tools:layout="@layout/fragment_user_info" >
+        <deepLink app:uri="app://SoftwareDesign/page/1" />
+    </fragment>
+    <fragment
+        android:id="@+id/other_fragment"
+        android:name="com.example.artem.softwaredesign.fragments.OtherFragment"
+        android:label="@string/other_fragment_title"
+        tools:layout="@layout/fragment_other" >
+        <deepLink app:uri="app://SoftwareDesign/page/2" />
+    </fragment>
+    <fragment
+        android:id="@+id/user_edit"
+        android:name="com.example.artem.softwaredesign.fragments.UserEditFragment"
+        android:label="@string/editing_user_info_fragment_title"
+        tools:layout="@layout/fragment_user_edit" >
+        <deepLink app:uri="app://SoftwareDesign/page/1/edit"/>
+    </fragment>
+    <fragment
+        android:id="@+id/news"
+        android:name="com.example.artem.softwaredesign.fragments.NewsFragment"
+        android:label="@string/news_fragment_title"
+        tools:layout="@layout/fragment_news">
+        <deepLink app:uri="app://SoftwareDesign/page/3" />
+    </fragment>
+    <fragment
+        android:id="@+id/about"
+        android:name="com.example.artem.softwaredesign.fragments.AboutFragment"
+        android:label="@string/about_fragment_title"
+        tools:layout="@layout/fragment_about" />
+
+
+</navigation>
