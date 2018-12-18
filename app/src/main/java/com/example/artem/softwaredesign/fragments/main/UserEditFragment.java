@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmptyFieldException;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
 import com.google.android.material.textfield.TextInputLayout;
@@ -107,6 +109,9 @@ public class UserEditFragment extends Fragment {
         } catch (EmailAlreadyTakenException ex){
             emaileTextInputLayout.setError(String.format(
                     getResources().getString(R.string.message_for_already_email), ex.getEmail()));
+        } catch (EmptyFieldException e) {
+            Toast toast = Toast.makeText((Context)onFragmentUserEditListener, e.getMessage(), Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 

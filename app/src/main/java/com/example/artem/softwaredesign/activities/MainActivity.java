@@ -8,11 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmptyFieldException;
 import com.example.artem.softwaredesign.data.models.RssFeed;
 
 import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
@@ -26,7 +28,10 @@ import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSource
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
+import com.example.artem.softwaredesign.support.TextManager;
 import com.google.android.material.navigation.NavigationView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -176,10 +181,14 @@ public class MainActivity extends PermissionActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setPositiveButton(positive, (dialog, which) -> {
-
+                    try {
                         saveUserInfo(newUser, getNewAvatar());
                         navigatable.navigate();
-
+                    } catch (EmptyFieldException e) {
+                        Toast toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
+                        toast.show();
+                        e.printStackTrace();
+                    }
                 })
                 .setNegativeButton(negative, (dialog, which) -> {
                     navigatable.navigate();
@@ -272,7 +281,7 @@ public class MainActivity extends PermissionActivity
     }
 
     @Override
-    public void saveChangesFromEditing(User user, Bitmap avatar) throws EmailAlreadyTakenException {
+    public void saveChangesFromEditing(User user, Bitmap avatar) throws EmptyFieldException {
         saveUserInfo(user, avatar);
         navController.popBackStack();
     }
@@ -343,7 +352,13 @@ public class MainActivity extends PermissionActivity
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 
-    private void saveUserInfo(User user, Bitmap avatar) {
+    private void saveUserInfo(User user, Bitmap avatar) throws EmptyFieldException {
+        List<String> emptyFields = TextManager.isEmpty(user.getFirstName(), user.getLastName(),
+                user.getPhone(), user.getEmail());
+        if (emptyFields != null){
+            throw new EmptyFieldException(emptyFields);
+        }
+
         userRepository.savedUser(user);
         if (isChangeAvatar) {
             userAvatarManager.updateAvatar(avatar);
@@ -352,24 +367,16 @@ public class MainActivity extends PermissionActivity
         isChangeAvatar = false;
     }
 
-    private User checkEditingForChange() {
-        TextView firstNameView = findViewById(R.id.first_name_edit);
-        TextView lastNameView = findViewById(R.id.last_name_edit);
-        TextView phoneView = findViewById(R.id.phone_edit);
-        TextView emailView = findViewById(R.id.email_edit);
+    private User checkEditingForChange()  {
+        String firstName = ((EditText)findViewById(R.id.first_name_edit)).getText().toString();
+        String lastName = ((EditText)findViewById(R.id.last_name_edit)).getText().toString();
+        String phone = ((EditText)findViewById(R.id.phone_edit)).getText().toString();
+        String email = ((EditText)findViewById(R.id.email_edit)).getText().toString();
 
         User user = userRepository.getUserById(currentUserId);
-
-        if (!user.getFirstName().contentEquals(firstNameView.getText()) ||
-                !user.getLastName().contentEquals(lastNameView.getText()) ||
-                !user.getEmail().contentEquals(emailView.getText()) ||
-                !user.getPhone().contentEquals(phoneView.getText()) || isChangeAvatar) {
-            return new User(
-                    firstNameView.getText().toString(),
-                    lastNameView.getText().toString(),
-                    phoneView.getText().toString(),
-                    emailView.getText().toString()
-            );
+        if (!user.getFirstName().equals(firstName) || !user.getLastName().equals(lastName) ||
+                !user.getEmail().equals(email) || !user.getPhone().equals(phone) || isChangeAvatar) {
+            return new User(firstName, lastName, phone, email);
         }
         return null;
     }
