@@ -13,11 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.models.RssFeed;
+
 import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
+
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
-import com.example.artem.softwaredesign.fragments.main.UserEditFragment;
+import com.example.artem.softwaredesign.data.storages.SQLite.rss.RssSQLiteRepository;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
+import com.example.artem.softwaredesign.interfaces.RssRepository;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
 import com.google.android.material.navigation.NavigationView;
@@ -30,7 +36,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-//import androidx.fragment.app.Fragment;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -38,9 +43,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends PermissionActivity
-        implements OnFragmentUserInfoListener, OnFragmentUserEditListener {
+        implements OnFragmentUserInfoListener, OnFragmentUserEditListener,
+        OnFragmentNewSourceListener, OnFragmentRssListener {
 
-    private interface Navigatable{
+    private interface Navigable {
         void navigate();
     }
 
@@ -48,12 +54,16 @@ public class MainActivity extends PermissionActivity
     private final int OPEN_GALLERY_REQUEST = 2;
 
     private boolean editInfoIsCurrentFragment = false;
+
     private boolean isChangeAvatar = false;
+
 
     private int currentUserId;
 
     private UserImageManager userAvatarManager;
     private NavController navController;
+    private RssRepository rssRepository;
+
 
     private DrawerLayout drawerLayout;
 
@@ -63,6 +73,7 @@ public class MainActivity extends PermissionActivity
         setContentView(R.layout.activity_main);
 
         userAvatarManager = new UserImageManager(this);
+        rssRepository = new RssSQLiteRepository(this);
 
         NavigationView navView = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -113,21 +124,53 @@ public class MainActivity extends PermissionActivity
     public void onBackPressed() {
         if (editInfoIsCurrentFragment) {
             User changes = checkEditingForChange();
-            if (changes != null){
+            if (changes != null) {
                 requestForSaveChanges(changes, super::onBackPressed);
             } else {
                 super.onBackPressed();
             }
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
 
-    private void requestForSaveChanges(User newUser, Navigatable navigatable){
+    @Override
+    public String getNewsResources() {
+        return userRepository.getUserById(currentUserId).getNewsSource();
+    }
+
+    @Override
+    public void redirectedToSettings() {
+        navController.popBackStack();
+        navController.navigate(R.id.newSourceFragment);
+    }
+
+    @Override
+    public void saveRssInCache(List<RssFeed> feeds) {
+        rssRepository.clearCache();
+        for (RssFeed feed: feeds) {
+            rssRepository.addRss(feed);
+        }
+    }
+
+    @Override
+    public List<RssFeed> getRssFromCache() {
+        return rssRepository.getAllFeedFromCache();
+    }
+
+    @Override
+    public void saveNewsResources(String resource) {
+        User user = userRepository.getUserById(currentUserId);
+        user.setNewsSource(resource);
+        userRepository.savedUser(user);
+        navController.popBackStack();
+    }
+
+
+    private void requestForSaveChanges(User newUser, Navigable navigatable) {
         final String positive = getResources().getString(R.string.positive_logout);
         final String negative = getResources().getString(R.string.negative_logout);
-        final String title = getResources().getString(R.string.logout_description_for_dialog);
+        final String title = getResources().getString(R.string.change_data_request);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
@@ -163,16 +206,14 @@ public class MainActivity extends PermissionActivity
                 if (childFragments.get(0) instanceof UserInfoFragment) {
                     toggleNavigationDrawer(drawer);
                 } else {
-                    if (editInfoIsCurrentFragment){
+                    if (editInfoIsCurrentFragment) {
                         User user = checkEditingForChange();
-                        if (user != null){
+                        if (user != null) {
                             requestForSaveChanges(user, navController::popBackStack);
-                        }
-                        else {
+                        } else {
                             navController.popBackStack();
                         }
-                    }
-                    else {
+                    } else {
                         navController.popBackStack();
                     }
                 }
@@ -210,6 +251,7 @@ public class MainActivity extends PermissionActivity
                     Intent intent = new Intent(this, AuthenticationActivity.class);
                     intent.putExtra(IS_LOGOUT_KEY, currentUserId);
                     startActivity(intent);
+                    rssRepository.clearCache();
                     finish();
                 })
                 .setNegativeButton(negative, (dialog, which) -> dialog.cancel());
@@ -329,6 +371,7 @@ public class MainActivity extends PermissionActivity
         TextView emailView = findViewById(R.id.email_edit);
 
         User user = userRepository.getUserById(currentUserId);
+
         if (!user.getFirstName().contentEquals(firstNameView.getText()) ||
                 !user.getLastName().contentEquals(lastNameView.getText()) ||
                 !user.getEmail().contentEquals(emailView.getText()) ||
@@ -343,6 +386,7 @@ public class MainActivity extends PermissionActivity
         return null;
     }
 
+
     private Bitmap getNewAvatar(){
         final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
         return  ((BitmapDrawable) viewForAvatar.getDrawable()).getBitmap();
@@ -354,7 +398,6 @@ public class MainActivity extends PermissionActivity
         loadUserAvatar(headerView.findViewById(R.id.image_from_nav_header));
         TextView nameTextView = headerView.findViewById(R.id.first_name_from_nav_header);
         nameTextView.setText(user.getFirstName());
-
         TextView emailTextView = headerView.findViewById(R.id.email_from_nav_header);
         emailTextView.setText(user.getEmail());
     }

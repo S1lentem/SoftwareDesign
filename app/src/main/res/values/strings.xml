@@ -27,6 +27,7 @@
     <string name="second_page">News</string>
     <string name="imei_info">IMEI info</string>
     <string name="group_for_other">Other</string>
+    <string name="settings_menu_component">Settings</string>
     <string name="logout">LogOut</string>
 
     <string name="about">About</string>
@@ -61,6 +62,7 @@
     <string name="phone_label">Phone</string>
     <string name="password_label">Password</string>
     <string name="confirm_password_label">Confirm password</string>
+    <string name="news_resource_label">News resource</string>
 
     <!-- Fragments names -->
     <string name="user_info_fragment_title">User Info</string>
@@ -98,5 +100,11 @@
     <string name="massage_for_not_match_password">confirm password and password must match</string>
     <string name="message_for_email_not_found">User with this email does not exist</string>
     <string name="message_for_missing_password">Wrong password</string>
+
     <string name="message_for_already_email">The user with the e-mail: %s is already registered</string>
+
+    <!-- Checking online -->
+    <string name="online_message">You are online</string>
+    <string name="offline_message">You are offline. All news will be taken from the cache</string>
+
 </resources>

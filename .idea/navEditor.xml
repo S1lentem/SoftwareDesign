@@ -11,12 +11,6 @@
                   <entry key="authorizationFragment">
                     <value>
                       <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_authorizationFragment_to_registrationFragment">
@@ -31,14 +25,7 @@
                   </entry>
                   <entry key="registrationFragment">
                     <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="265" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
+                      <LayoutPositions />
                     </value>
                   </entry>
                 </map>
@@ -63,13 +50,25 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="newSourceFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="30" />
+                            <option name="y" value="-318" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="news">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="-248" />
-                            <option name="y" value="309" />
+                            <option name="y" value="295" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -82,6 +81,18 @@
                           <Point>
                             <option name="x" value="-240" />
                             <option name="y" value="-283" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="rssFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-252" />
+                            <option name="y" value="610" />
                           </Point>
                         </option>
                       </LayoutPositions>

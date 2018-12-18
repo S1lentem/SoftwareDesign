@@ -64,10 +64,12 @@ public class AboutFragment extends Fragment {
             final String description = onFragmentAboutListener.getDescriptionPermission();
             final Snackbar bar = Snackbar.make(view, description, Snackbar.LENGTH_INDEFINITE);
 
+
             onFragmentAboutListener.requestPermissionForImei();
             bar.setAction(getResources().getString(R.string.ok), v -> {
-                onFragmentAboutListener.requestPermissionForImei();
+
                 try {
+
                     String imei = onFragmentAboutListener.getImei();
                 } catch (NotAccessToImeiException secondEx) {
                     textViewForImei.setText(getResources().getString(R.string.default_for_imei));

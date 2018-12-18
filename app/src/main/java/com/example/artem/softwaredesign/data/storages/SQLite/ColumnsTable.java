@@ -6,5 +6,6 @@ enum ColumnsTable {
     last_name,
     phone,
     email,
-    password
+    password,
+    news_source
 }
