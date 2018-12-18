@@ -5,9 +5,6 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/user_info_fragment"
-            android:title="@string/user_info" />
-        <item
             android:id="@+id/other_fragment"
             android:title="@string/first_page" />
         <item

@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.fragments;
+package com.example.artem.softwaredesign.fragments.main;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.models.User;
-import com.example.artem.softwaredesign.interfaces.OnFragmentUserInfoListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
 
 import androidx.fragment.app.Fragment;
 
@@ -40,6 +40,9 @@ public class UserInfoFragment extends Fragment{
 
         parentContainer.findViewById(R.id.go_edit_user_info_button)
                 .setOnClickListener(v -> onFragmentUserInfoListener.onUserEditClick());
+
+        parentContainer.findViewById(R.id.logout_button)
+                .setOnClickListener(V -> onFragmentUserInfoListener.onLogoutClick());
 
         onFragmentUserInfoListener.loadUserAvatar(parentContainer.findViewById(R.id.avatar_image_view));
 

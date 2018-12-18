@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.data.storages;
+package com.example.artem.softwaredesign.data.storages.SQLite;
 
 import android.content.Context;
 import android.graphics.Bitmap;
