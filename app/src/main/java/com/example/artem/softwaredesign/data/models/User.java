@@ -8,6 +8,12 @@ public class User {
     private String phone;
     private String password;
     private String newsSource;
+    private int count;
+    public User(int id, String firstName, String lastName, String email, String phone, String password,
+                String newsResource, int count){
+        this(id, firstName, lastName, email, phone, password, newsResource);
+        this.count = count;
+    }
 
     public User(String firsName, String lastName, String email, String phone){
         this.firstName = firsName;
@@ -78,4 +84,9 @@ public class User {
     public void setNewsSource(String newsSource){
         this.newsSource = newsSource;
     }
+
+    public int getCount() {
+        return count;
+    }
+
 }

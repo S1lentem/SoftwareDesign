@@ -170,7 +170,7 @@ public class MainActivity extends PermissionActivity
     private void requestForSaveChanges(User newUser, Navigable navigatable) {
         final String positive = getResources().getString(R.string.positive_logout);
         final String negative = getResources().getString(R.string.negative_logout);
-        final String title = getResources().getString(R.string.logout_description_for_dialog);
+        final String title = getResources().getString(R.string.change_data_request);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
