@@ -22,6 +22,7 @@ import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenExcepti
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.files.UserImageManager;
 import com.example.artem.softwaredesign.data.storages.SQLite.rss.RssSQLiteRepository;
+import com.example.artem.softwaredesign.fragments.main.UserEditFragment;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
 import com.example.artem.softwaredesign.interfaces.RssRepository;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
@@ -111,8 +112,7 @@ public class MainActivity extends PermissionActivity
 
 
 
-        findViewById(R.id.about_button).setOnClickListener(v -> navController.navigate(R.id.about));
-
+        findViewById(R.id.about_button).setOnClickListener(this::onAbloutClickListener);
         User user = userRepository.getUserById(currentUserId);
         headerView.findViewById(R.id.image_from_nav_header).setOnClickListener(v -> {
             navController.navigate(R.id.user_info_fragment);
@@ -197,6 +197,27 @@ public class MainActivity extends PermissionActivity
         alert.show();
     }
 
+    private void onAbloutClickListener(View v){
+        if (isInMainFragment()){
+            navController.navigate(R.id.about);
+        } else {
+            if (editInfoIsCurrentFragment){
+                User user = checkEditingForChange();
+                if (user != null){
+                    requestForSaveChanges(user,() -> {
+                        navController.popBackStack();
+                        navController.navigate(R.id.about);
+                    });
+                }else {
+                    navController.popBackStack();
+                    navController.navigate(R.id.about);
+                }
+            } else {
+                navController.popBackStack();
+                navController.navigate(R.id.about);
+            }
+        }
+    }
 
     private void onToolbarNavigationClickListener(View v) {
         DrawerLayout drawer = findViewById(R.id.main);
@@ -231,6 +252,19 @@ public class MainActivity extends PermissionActivity
         } else if (drawerLockMode != DrawerLayout.LOCK_MODE_LOCKED_CLOSED) {
             drawer.openDrawer(GravityCompat.START);
         }
+    }
+
+    private boolean isInMainFragment(){
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragmentList) {
+            if (fragment instanceof NavHostFragment) {
+                List<Fragment> childFragments = fragment.getChildFragmentManager().getFragments();
+                if (childFragments.get(0) instanceof UserInfoFragment) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
