@@ -8,12 +8,12 @@ import android.telephony.TelephonyManager;
 
 import com.example.artem.softwaredesign.BuildConfig;
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.interfaces.OnFragmentAboutListener;
+import com.example.artem.softwaredesign.data.exceptions.about.NotAccessToImeiException;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAboutListener;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-public class PermissionActivity extends AppCompatActivity
+public class PermissionActivity extends UserStorageActivity
         implements OnFragmentAboutListener {
 
     private final int REQUEST_CODE_PERMISSION_READ_PHONE_STATE = 1;
@@ -30,13 +30,13 @@ public class PermissionActivity extends AppCompatActivity
 
 
     @Override
-    public String getImei() {
+    public String getImei() throws NotAccessToImeiException {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             return manager.getDeviceId();
         }
-        return null;
+        throw new NotAccessToImeiException();
     }
 
     @Override

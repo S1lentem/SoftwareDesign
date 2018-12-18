@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.fragments;
+package com.example.artem.softwaredesign.fragments.main;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.interfaces.OnFragmentAboutListener;
+import com.example.artem.softwaredesign.data.exceptions.about.NotAccessToImeiException;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAboutListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.fragment.app.Fragment;
@@ -31,11 +32,14 @@ public class AboutFragment extends Fragment {
 
         textViewForVersion.setText(onFragmentAboutListener.getVersion());
 
-        String imei = onFragmentAboutListener.getImei();
-        if (imei != null){
+        try {
+            String imei = onFragmentAboutListener.getImei();
             textViewForImei.setText(imei);
         }
-        buttonForUpdateImei.setOnClickListener(v -> onUpdateButtonClick());
+        catch (NotAccessToImeiException ex){
+            onFragmentAboutListener.requestPermissionForImei();
+        }
+        buttonForUpdateImei.setOnClickListener(v -> tryUpdateImei());
         return view;
     }
 
@@ -51,26 +55,24 @@ public class AboutFragment extends Fragment {
         }
     }
 
-    private boolean setImeiInTextView(){
-        String imei = onFragmentAboutListener.getImei();
-        if (imei != null){
+    private void tryUpdateImei() {
+        try {
+            String imei = onFragmentAboutListener.getImei();
             textViewForImei.setText(imei);
-            return true;
-        }
-        return false;
-    }
-
-    private void onUpdateButtonClick(){
-        if (!setImeiInTextView()){
+        } catch (NotAccessToImeiException ex) {
             final View view = getActivity().findViewById(android.R.id.content);
             final String description = onFragmentAboutListener.getDescriptionPermission();
-
             final Snackbar bar = Snackbar.make(view, description, Snackbar.LENGTH_INDEFINITE);
+
+            onFragmentAboutListener.requestPermissionForImei();
             bar.setAction(getResources().getString(R.string.ok), v -> {
                 onFragmentAboutListener.requestPermissionForImei();
-                setImeiInTextView();
-            }).show();
+                try {
+                    String imei = onFragmentAboutListener.getImei();
+                } catch (NotAccessToImeiException secondEx) {
+                    textViewForImei.setText(getResources().getString(R.string.default_for_imei));
+                }
+            });
         }
     }
-
 }

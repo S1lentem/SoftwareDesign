@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/user_edit_fragment"
-    tools:context=".fragments.UserEditFragment">
+    tools:context=".fragments.main.UserEditFragment">
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -76,7 +76,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_email_text_input_layout">
 
                 <EditText
                     android:id="@+id/email_edit"

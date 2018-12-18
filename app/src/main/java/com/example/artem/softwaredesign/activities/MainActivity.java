@@ -1,35 +1,25 @@
 package com.example.artem.softwaredesign.activities;
 
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-
-
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.models.User;
-import com.example.artem.softwaredesign.data.storages.UserImageManager;
-import com.example.artem.softwaredesign.data.storages.UserSQLiteRepository;
-import com.example.artem.softwaredesign.fragments.AboutFragment;
-import com.example.artem.softwaredesign.fragments.NewsFragment;
-import com.example.artem.softwaredesign.fragments.OtherFragment;
-import com.example.artem.softwaredesign.fragments.UserEditFragment;
-import com.example.artem.softwaredesign.fragments.UserInfoFragment;
-import com.example.artem.softwaredesign.interfaces.OnFragmentUserEditListener;
-import com.example.artem.softwaredesign.interfaces.OnFragmentUserInfoListener;
-import com.example.artem.softwaredesign.interfaces.UserRepository;
+import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
+import com.example.artem.softwaredesign.fragments.main.UserEditFragment;
+import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
@@ -38,54 +28,78 @@ import java.util.List;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
+//import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends PermissionActivity
         implements OnFragmentUserInfoListener, OnFragmentUserEditListener {
 
+    private interface Navigatable{
+        void navigate();
+    }
+
     private final int OPEN_CAMERA_REQUEST = 1;
     private final int OPEN_GALLERY_REQUEST = 2;
 
+    private boolean editInfoIsCurrentFragment = false;
+    private boolean isChangeAvatar = false;
+
+    private int currentUserId;
+
     private UserImageManager userAvatarManager;
-
     private NavController navController;
-    private UserRepository userRepository;
 
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userRepository = new UserSQLiteRepository(this);
         userAvatarManager = new UserImageManager(this);
 
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navView = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        View headerView = navView.getHeaderView(0);
+
+        drawerLayout = findViewById(R.id.main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         setSupportActionBar(toolbar);
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
-        NavigationUI.setupActionBarWithNavController(this, navController, findViewById(R.id.main));
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 
 
-        DrawerLayout drawer = findViewById(R.id.main);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+
         toggle.syncState();
+        toggle.setDrawerIndicatorEnabled(false);
+        toggle.setToolbarNavigationClickListener(this::onToolbarNavigationClickListener);
+
+
+        String userId = sessionController.getIdAuthorizedUser();
+        if (userId != null) {
+            currentUserId = Integer.valueOf(userId);
+        } else {
+            Intent intent = new Intent(this, AuthenticationActivity.class);
+            startActivity(intent);
+
+        }
 
         findViewById(R.id.about_button).setOnClickListener(v -> navController.navigate(R.id.about));
 
-        User user = userRepository.getUser();
-        View headerView = navView.getHeaderView(0);
+        User user = userRepository.getUserById(currentUserId);
         headerView.findViewById(R.id.image_from_nav_header).setOnClickListener(v -> {
             navController.navigate(R.id.user_info_fragment);
-            drawer.closeDrawer(GravityCompat.START);
+            drawerLayout.closeDrawer(GravityCompat.START);
         });
         TextView nameTextView = headerView.findViewById(R.id.first_name_from_nav_header);
         nameTextView.setText(user.getFirstName());
@@ -94,14 +108,118 @@ public class MainActivity extends PermissionActivity
         emailTextView.setText(user.getEmail());
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (editInfoIsCurrentFragment) {
+            User changes = checkEditingForChange();
+            if (changes != null){
+                requestForSaveChanges(changes, super::onBackPressed);
+            } else {
+                super.onBackPressed();
+            }
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    private void requestForSaveChanges(User newUser, Navigatable navigatable){
+        final String positive = getResources().getString(R.string.positive_logout);
+        final String negative = getResources().getString(R.string.negative_logout);
+        final String title = getResources().getString(R.string.logout_description_for_dialog);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setPositiveButton(positive, (dialog, which) -> {
+                    try {
+                        saveUserInfo(newUser, getNewAvatar());
+                        navigatable.navigate();
+                    } catch (EmailAlreadyTakenException ex){
+                        Toast toast = Toast.makeText(this,
+                                String.format(getResources().getString(R.string.message_for_already_email),
+                                        ex.getEmail()),
+                                Toast.LENGTH_LONG);
+                        toast.show();
+                        navigatable.navigate();
+                    }
+
+                })
+                .setNegativeButton(negative, (dialog, which) -> {
+                    navigatable.navigate();
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    private void onToolbarNavigationClickListener(View v) {
+        DrawerLayout drawer = findViewById(R.id.main);
+
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragmentList) {
+            if (fragment instanceof NavHostFragment) {
+                List<Fragment> childFragments = fragment.getChildFragmentManager().getFragments();
+                if (childFragments.get(0) instanceof UserInfoFragment) {
+                    toggleNavigationDrawer(drawer);
+                } else {
+                    if (editInfoIsCurrentFragment){
+                        User user = checkEditingForChange();
+                        if (user != null){
+                            requestForSaveChanges(user, navController::popBackStack);
+                        }
+                        else {
+                            navController.popBackStack();
+                        }
+                    }
+                    else {
+                        navController.popBackStack();
+                    }
+                }
+            }
+        }
+    }
+
+    private void toggleNavigationDrawer(DrawerLayout drawer) {
+        int drawerLockMode = drawer.getDrawerLockMode(GravityCompat.START);
+        if (drawer.isDrawerVisible(GravityCompat.START)
+                && (drawerLockMode != DrawerLayout.LOCK_MODE_LOCKED_OPEN)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else if (drawerLockMode != DrawerLayout.LOCK_MODE_LOCKED_CLOSED) {
+            drawer.openDrawer(GravityCompat.START);
+        }
+    }
+
+
     @Override
     public void onUserEditClick() {
         navController.navigate(R.id.user_edit);
+        editInfoIsCurrentFragment = true;
+        isChangeAvatar = false;
+    }
+
+    @Override
+    public void onLogoutClick() {
+        final String positive = getResources().getString(R.string.positive_logout);
+        final String negative = getResources().getString(R.string.negative_logout);
+        final String title = getResources().getString(R.string.logout_description_for_dialog);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setPositiveButton(positive, (dialog, which) -> {
+                    Intent intent = new Intent(this, AuthenticationActivity.class);
+                    intent.putExtra(IS_LOGOUT_KEY, currentUserId);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton(negative, (dialog, which) -> dialog.cancel());
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
     public User getUser() {
-        return userRepository.getUser();
+        return userRepository.getUserById(currentUserId);
     }
 
     @Override
@@ -114,11 +232,13 @@ public class MainActivity extends PermissionActivity
     }
 
     @Override
-    public void saveChangesFromEditing(User user) {
-        final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
-        Bitmap avatar = ((BitmapDrawable) viewForAvatar.getDrawable()).getBitmap();
-        userRepository.savedUser(user);
-        userAvatarManager.updateAvatar(avatar);
+    public void setCurrentFragmentIsEditing(boolean state) {
+        this.editInfoIsCurrentFragment = state;
+    }
+
+    @Override
+    public void saveChangesFromEditing(User user, Bitmap avatar) throws EmailAlreadyTakenException {
+        saveUserInfo(user, avatar);
         navController.popBackStack();
     }
 
@@ -134,6 +254,7 @@ public class MainActivity extends PermissionActivity
                         avatar = (Bitmap) data.getExtras().get("data");
                         viewForAvatar.setImageBitmap(avatar);
                         viewForAvatar.setRotation(90);
+                        isChangeAvatar = true;
                     }
                 }
                 break;
@@ -144,6 +265,7 @@ public class MainActivity extends PermissionActivity
                         avatar = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
                         viewForAvatar.setImageBitmap(avatar);
                         viewForAvatar.setRotation(90);
+                        isChangeAvatar = true;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -153,12 +275,16 @@ public class MainActivity extends PermissionActivity
 
     @Override
     public void onPhotoUserClick() {
-        final CharSequence[] items = {"Camera", "Gallery"};
+        final String camera = getResources().getString(R.string.for_camera);
+        final String gallery = getResources().getString(R.string.for_gallery);
+
+        final CharSequence[] items = {camera, gallery};
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setItems(items, (dialog, which) -> {
             switch (which) {
                 case 0:
-                    openCamera(null);
+                    openCamera();
                     break;
                 case 1:
                     openGallery();
@@ -169,7 +295,7 @@ public class MainActivity extends PermissionActivity
         alert.show();
     }
 
-    private void openCamera(ImageView view) {
+    private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, userAvatarManager.generateUriForSave().getPath());
         startActivityForResult(intent, OPEN_CAMERA_REQUEST);
@@ -182,25 +308,54 @@ public class MainActivity extends PermissionActivity
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 
-    @Override
-    public void onBackPressed() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        StringBuilder result = new StringBuilder();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment != null)
-                    if (fragment instanceof UserEditFragment ||
-                            fragment instanceof UserInfoFragment ||
-                            fragment instanceof AboutFragment ||
-                            fragment instanceof OtherFragment ||
-                            fragment instanceof NewsFragment) {
-                        result.append("Tag: ").append(fragment.toString()).append("\n");
-                    }
-            }
+    private void saveUserInfo(User user, Bitmap avatar) throws EmailAlreadyTakenException {
+        User testUser = userRepository.getUserByEmail(user.getEmail());
+        if (testUser != null && user.getId() != testUser.getId()){
+            throw new EmailAlreadyTakenException(user.getEmail());
         }
-        Toast toast = Toast.makeText(this, result, Toast.LENGTH_LONG);
-        toast.show();
-        super.onBackPressed();
+
+        userRepository.savedUser(user);
+        if (isChangeAvatar) {
+            userAvatarManager.updateAvatar(avatar);
+        }
+        updateHeader(user);
+        isChangeAvatar = false;
+    }
+
+    private User checkEditingForChange() {
+        TextView firstNameView = findViewById(R.id.first_name_edit);
+        TextView lastNameView = findViewById(R.id.last_name_edit);
+        TextView phoneView = findViewById(R.id.phone_edit);
+        TextView emailView = findViewById(R.id.email_edit);
+
+        User user = userRepository.getUserById(currentUserId);
+        if (!user.getFirstName().contentEquals(firstNameView.getText()) ||
+                !user.getLastName().contentEquals(lastNameView.getText()) ||
+                !user.getEmail().contentEquals(emailView.getText()) ||
+                !user.getPhone().contentEquals(phoneView.getText()) || isChangeAvatar) {
+            return new User(
+                    firstNameView.getText().toString(),
+                    lastNameView.getText().toString(),
+                    phoneView.getText().toString(),
+                    emailView.getText().toString()
+            );
+        }
+        return null;
+    }
+
+    private Bitmap getNewAvatar(){
+        final ImageView viewForAvatar = findViewById(R.id.edit_avatar_image_view);
+        return  ((BitmapDrawable) viewForAvatar.getDrawable()).getBitmap();
+    }
+
+    private void updateHeader(User user){
+        NavigationView navView = findViewById(R.id.nav_view);
+        View headerView = navView.getHeaderView(0);
+        loadUserAvatar(headerView.findViewById(R.id.image_from_nav_header));
+        TextView nameTextView = headerView.findViewById(R.id.first_name_from_nav_header);
+        nameTextView.setText(user.getFirstName());
+
+        TextView emailTextView = headerView.findViewById(R.id.email_from_nav_header);
+        emailTextView.setText(user.getEmail());
     }
 }
