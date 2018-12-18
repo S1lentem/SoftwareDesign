@@ -262,7 +262,7 @@ public class MainActivity extends PermissionActivity
         Uri uriForAvatar = userAvatarManager.getUriForUserAvatar();
         if (uriForAvatar != null) {
             view.setImageURI(uriForAvatar);
-            view.setRotation(90);
+            view.setRotation(-90);
         }
     }
 
@@ -288,7 +288,7 @@ public class MainActivity extends PermissionActivity
                     if (viewForAvatar != null) {
                         avatar = (Bitmap) data.getExtras().get("data");
                         viewForAvatar.setImageBitmap(avatar);
-                        viewForAvatar.setRotation(90);
+                        viewForAvatar.setRotation(-90);
                         isChangeAvatar = true;
                     }
                 }
@@ -299,7 +299,7 @@ public class MainActivity extends PermissionActivity
                     try {
                         avatar = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
                         viewForAvatar.setImageBitmap(avatar);
-                        viewForAvatar.setRotation(90);
+                        viewForAvatar.setRotation(-90);
                         isChangeAvatar = true;
                     } catch (IOException e) {
                         e.printStackTrace();
