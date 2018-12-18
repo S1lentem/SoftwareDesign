@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.data.storages.SQLite;
+package com.example.artem.softwaredesign.data.storages.files;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,15 +10,16 @@ import java.io.IOException;
 
 public class UserImageManager {
 
-    private final String AVATAR_NAME = "avatar.jpg";
+    private final String fileName;
     private Context context;
 
-    public UserImageManager(Context context){
+    public UserImageManager(Context context, int userId){
+        fileName = String.valueOf(userId) + ".jpg";
         this.context = context;
     }
 
     public void updateAvatar(Bitmap avatar){
-        File newAvatar = new File(context.getCacheDir().getAbsolutePath(), AVATAR_NAME);
+        File newAvatar = new File(context.getCacheDir().getAbsolutePath(), fileName);
         try {
             FileOutputStream out = new FileOutputStream(newAvatar);
             avatar.compress(Bitmap.CompressFormat.JPEG, 90, out);
@@ -29,12 +30,12 @@ public class UserImageManager {
     }
 
     public Uri getUriForUserAvatar(){
-        File file = new File(context.getCacheDir().getAbsolutePath(), AVATAR_NAME);
+        File file = new File(context.getCacheDir().getAbsolutePath(), fileName);
         return file.exists() ? Uri.fromFile(file) : null;
     }
 
     public Uri generateUriForSave(){
-        File file = new File(context.getCacheDir().getAbsolutePath(), AVATAR_NAME);
+        File file = new File(context.getCacheDir().getAbsolutePath(), fileName);
         return Uri.fromFile(file);
     }
 }

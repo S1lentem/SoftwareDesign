@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.data.storages.SQLite;
+package com.example.artem.softwaredesign.data.storages.SQLite.user;
 
 import android.content.ContentValues;
 import android.content.Context;

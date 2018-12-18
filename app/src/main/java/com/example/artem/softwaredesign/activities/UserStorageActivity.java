@@ -2,7 +2,7 @@ package com.example.artem.softwaredesign.activities;
 
 import android.os.Bundle;
 
-import com.example.artem.softwaredesign.data.storages.SQLite.UserSQLiteRepository;
+import com.example.artem.softwaredesign.data.storages.SQLite.user.UserSQLiteRepository;
 import com.example.artem.softwaredesign.data.user.SessionController;
 import com.example.artem.softwaredesign.interfaces.UserRepository;
 

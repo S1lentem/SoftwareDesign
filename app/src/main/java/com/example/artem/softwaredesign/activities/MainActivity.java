@@ -18,7 +18,7 @@ import com.example.artem.softwaredesign.data.models.RssFeed;
 import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
 
 import com.example.artem.softwaredesign.data.models.User;
-import com.example.artem.softwaredesign.data.storages.SQLite.UserImageManager;
+import com.example.artem.softwaredesign.data.storages.files.UserImageManager;
 import com.example.artem.softwaredesign.data.storages.SQLite.rss.RssSQLiteRepository;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
 import com.example.artem.softwaredesign.interfaces.RssRepository;
@@ -72,7 +72,16 @@ public class MainActivity extends PermissionActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userAvatarManager = new UserImageManager(this);
+        String userId = sessionController.getIdAuthorizedUser();
+        if (userId != null) {
+            currentUserId = Integer.valueOf(userId);
+        } else {
+            Intent intent = new Intent(this, AuthenticationActivity.class);
+            startActivity(intent);
+
+        }
+
+        userAvatarManager = new UserImageManager(this, currentUserId);
         rssRepository = new RssSQLiteRepository(this);
 
         NavigationView navView = findViewById(R.id.nav_view);
@@ -96,14 +105,6 @@ public class MainActivity extends PermissionActivity
         toggle.setToolbarNavigationClickListener(this::onToolbarNavigationClickListener);
 
 
-        String userId = sessionController.getIdAuthorizedUser();
-        if (userId != null) {
-            currentUserId = Integer.valueOf(userId);
-        } else {
-            Intent intent = new Intent(this, AuthenticationActivity.class);
-            startActivity(intent);
-
-        }
 
         findViewById(R.id.about_button).setOnClickListener(v -> navController.navigate(R.id.about));
 
@@ -175,17 +176,9 @@ public class MainActivity extends PermissionActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setPositiveButton(positive, (dialog, which) -> {
-                    try {
+
                         saveUserInfo(newUser, getNewAvatar());
                         navigatable.navigate();
-                    } catch (EmailAlreadyTakenException ex){
-                        Toast toast = Toast.makeText(this,
-                                String.format(getResources().getString(R.string.message_for_already_email),
-                                        ex.getEmail()),
-                                Toast.LENGTH_LONG);
-                        toast.show();
-                        navigatable.navigate();
-                    }
 
                 })
                 .setNegativeButton(negative, (dialog, which) -> {
@@ -350,12 +343,7 @@ public class MainActivity extends PermissionActivity
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
 
-    private void saveUserInfo(User user, Bitmap avatar) throws EmailAlreadyTakenException {
-        User testUser = userRepository.getUserByEmail(user.getEmail());
-        if (testUser != null && user.getId() != testUser.getId()){
-            throw new EmailAlreadyTakenException(user.getEmail());
-        }
-
+    private void saveUserInfo(User user, Bitmap avatar) {
         userRepository.savedUser(user);
         if (isChangeAvatar) {
             userAvatarManager.updateAvatar(avatar);
