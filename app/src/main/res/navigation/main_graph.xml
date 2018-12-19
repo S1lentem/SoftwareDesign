@@ -43,12 +43,12 @@
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/newSourceFragment"
-        android:name="com.example.artem.softwaredesign.fragments.NewSourceFragment"
+        android:name="com.example.artem.softwaredesign.fragments.rss.RssResourceFragment"
         android:label="fragment_new_source"
         tools:layout="@layout/fragment_new_source" />
     <fragment
         android:id="@+id/rssFragment"
-        android:name="com.example.artem.softwaredesign.fragments.RssFragment"
+        android:name="com.example.artem.softwaredesign.fragments.rss.RssFragment"
         android:label="fragment_rss"
         tools:layout="@layout/fragment_rss" />
 

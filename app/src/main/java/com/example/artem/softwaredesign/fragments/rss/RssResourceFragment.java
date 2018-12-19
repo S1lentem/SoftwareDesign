@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.fragments;
+package com.example.artem.softwaredesign.fragments.rss;
 
 import android.content.Context;
 import android.net.Uri;
@@ -17,7 +17,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.w3c.dom.Text;
 
-public class NewSourceFragment extends Fragment {
+public class RssResourceFragment extends Fragment {
 
     private OnFragmentNewSourceListener onFragmentNewSourceListener;
 

@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.fragments;
+package com.example.artem.softwaredesign.fragments.rss;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
