@@ -17,12 +17,9 @@ import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.exceptions.validation.EmptyFieldException;
 import com.example.artem.softwaredesign.data.models.RssFeed;
 
-import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
-
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.data.storages.files.UserImageManager;
 import com.example.artem.softwaredesign.data.storages.SQLite.rss.RssSQLiteRepository;
-import com.example.artem.softwaredesign.fragments.main.UserEditFragment;
 import com.example.artem.softwaredesign.fragments.main.UserInfoFragment;
 import com.example.artem.softwaredesign.interfaces.RssRepository;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
@@ -31,8 +28,6 @@ import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditL
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserInfoListener;
 import com.example.artem.softwaredesign.support.TextManager;
 import com.google.android.material.navigation.NavigationView;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.exceptions.validation.EmptyFieldException;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentUserEditListener;

@@ -1,4 +1,4 @@
-package com.example.artem.softwaredesign.data.exceptions;
+package com.example.artem.softwaredesign.data.exceptions.validation;
 
 public class EmailAlreadyTakenException extends Exception {
     private String email;

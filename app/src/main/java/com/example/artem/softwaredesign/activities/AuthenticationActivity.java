@@ -1,16 +1,14 @@
 package com.example.artem.softwaredesign.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.crypto.EncryptionAlgorithm;
 import com.example.artem.softwaredesign.data.crypto.HashManager;
-import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
-import com.example.artem.softwaredesign.data.exceptions.EmailNotFoundException;
-import com.example.artem.softwaredesign.data.exceptions.PasswordDoesNotMatchException;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmailAlreadyTakenException;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmailNotFoundException;
+import com.example.artem.softwaredesign.data.exceptions.validation.PasswordDoesNotMatchException;
 import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAuthorizationListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRegistrationListener;

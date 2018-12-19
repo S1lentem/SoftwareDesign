@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.data.exceptions.EmailNotFoundException;
-import com.example.artem.softwaredesign.data.exceptions.PasswordDoesNotMatchException;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmailNotFoundException;
+import com.example.artem.softwaredesign.data.exceptions.validation.PasswordDoesNotMatchException;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAuthorizationListener;
 import com.google.android.material.textfield.TextInputLayout;
 

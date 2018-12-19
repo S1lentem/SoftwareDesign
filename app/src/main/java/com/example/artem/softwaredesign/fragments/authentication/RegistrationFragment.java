@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.artem.softwaredesign.R;
-import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
-import com.example.artem.softwaredesign.data.models.User;
-import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAuthorizationListener;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRegistrationListener;
 import com.google.android.material.textfield.TextInputLayout;
 

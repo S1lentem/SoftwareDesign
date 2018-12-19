@@ -3,7 +3,7 @@ package com.example.artem.softwaredesign.interfaces.fragments;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.example.artem.softwaredesign.data.exceptions.EmailAlreadyTakenException;
+import com.example.artem.softwaredesign.data.exceptions.validation.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.exceptions.validation.EmptyFieldException;
 import com.example.artem.softwaredesign.data.models.User;
 
