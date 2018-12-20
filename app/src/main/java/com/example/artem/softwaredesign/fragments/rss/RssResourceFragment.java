@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.data.models.User;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
 import com.example.artem.softwaredesign.support.TextManager;
 import com.google.android.material.textfield.TextInputLayout;
@@ -38,8 +39,11 @@ public class RssResourceFragment extends Fragment {
         newsSourceTextInputLayout = view.findViewById(R.id.first_news_source_text_input_layout);
         countNewsForCacheTextInputLayout = view.findViewById(R.id.count_rss_in_cache_text_input_layout);
 
-        String resource = onFragmentNewSourceListener.getUser().getNewsSource();
+        User user = onFragmentNewSourceListener.getUser();
+        String resource = user.getNewsSource();
+        int countResources = user.getCountRssForCached();
         newsSourceTextView.setText(resource != null ? resource : "");
+        countNewsForCacheEditText.setText(String.valueOf(countResources));
         view.findViewById(R.id.save_news_resource_button).setOnClickListener(v ->{
             if (isValidSource()){
                 onFragmentNewSourceListener.saveNewsResources(newsSourceTextView.getText().toString(),
