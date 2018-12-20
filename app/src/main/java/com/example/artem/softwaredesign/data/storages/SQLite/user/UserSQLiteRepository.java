@@ -24,11 +24,21 @@ public class UserSQLiteRepository implements UserRepository {
         cv.put(ColumnsTable.last_name.toString(), user.getLastName());
         cv.put(ColumnsTable.phone.toString(), user.getPhone());
         cv.put(ColumnsTable.email.toString(), user.getEmail());
-        cv.put(ColumnsTable.news_source.toString(), user.getNewsSource());
-        cv.put(ColumnsTable.count_for_cache.toString(), user.getCountRssForCached());
 
         try (SQLiteDatabase db = dbHelper.getReadableDatabase()) {
             db.update(dbHelper.getTableName(), cv,
+                    ColumnsTable.id.toString() + "=" + String.valueOf(userId), null);
+        }
+    }
+
+    @Override
+    public void updateUserSettings(String feedResource, int countFeedForCache, int userId){
+        ContentValues cv =  new ContentValues();
+        cv.put(ColumnsTable.news_source.toString(), feedResource);
+        cv.put(ColumnsTable.count_for_cache.toString(), countFeedForCache);
+
+        try(SQLiteDatabase database = dbHelper.getReadableDatabase()){
+            database.update(dbHelper.getTableName(), cv,
                     ColumnsTable.id.toString() + "=" + String.valueOf(userId), null);
         }
     }

@@ -161,10 +161,7 @@ public class MainActivity extends PermissionActivity
 
     @Override
     public void saveNewsResources(String resource, int count) {
-        User user = userRepository.getUserById(currentUserId);
-        user.setNewsSource(resource);
-        user.setCountRssForCached(count);
-        userRepository.savedUser(user);
+        userRepository.updateUserSettings(resource, count, currentUserId);
         navController.popBackStack();
     }
 

@@ -91,15 +91,11 @@ public class UserEditFragment extends Fragment {
     }
 
     private User getUserFromEditForm(){
-        User user = onFragmentUserEditListener.getUser();
         return new User(
-                user.getId(),
                 firstNameEditText.getText().toString(),
                 lastNameEditText.getText().toString(),
                 emailEditText.getText().toString(),
-                phoneEditText.getText().toString(),
-                user.getPassword()
-        );
+                phoneEditText.getText().toString());
     }
 
     private void saveChanges(){

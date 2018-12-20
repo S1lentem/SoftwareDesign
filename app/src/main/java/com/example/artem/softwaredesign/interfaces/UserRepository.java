@@ -7,4 +7,5 @@ public interface UserRepository {
     User getUserByEmail(String email);
     User getUserById(int id);
     void addUser(User user);
+    void updateUserSettings(String feedResource, int countFeedForCache, int userId);
 }
