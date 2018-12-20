@@ -42,8 +42,9 @@ public class RssFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeLayout;
-
     private List<RssFeed> mFeedModelList;
+
+
 
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -80,7 +81,9 @@ public class RssFragment extends Fragment {
             mSwipeLayout.setRefreshing(false);
 
             if (success) {
-                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+              //  mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+                Toast toast = Toast.makeText((Context)onFragmentRssListener, "Loaded", Toast.LENGTH_LONG);
+                toast.show();
             } else {
                 Toast.makeText(context, "Enter a valid Rss feed url", Toast.LENGTH_LONG).show();
             }
@@ -166,8 +169,7 @@ public class RssFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String newsResources = onFragmentRssListener.getNewsResources();
         if (newsResources == null || newsResources.equals("")){
             onFragmentRssListener.redirectedToSettings();
@@ -183,24 +185,48 @@ public class RssFragment extends Fragment {
         } else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
-
-        String message;
-        if (isOnline()) {
-            message = getResources().getString(R.string.online_message);
-            mSwipeLayout.setOnRefreshListener(() -> new FetchFeedTask().execute((Void) null));
-            new FetchFeedTask().execute((Void) null);
-        } else {
-            message = getResources().getString(R.string.offline_message);
-            mSwipeLayout.setOnRefreshListener(()->{});
-            mRecyclerView.setAdapter(
-                    new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
+        List<RssFeed> feedFromCache = onFragmentRssListener.getRssFromCache();
+        if (!feedFromCache.isEmpty()){
+            mRecyclerView.setAdapter(new RssFeedListAdapter(feedFromCache, context));
         }
-        Toast toast = Toast.makeText((Context) onFragmentRssListener, message,Toast.LENGTH_LONG);
-        toast.show();
+
+        if (isOnline()){
+            FetchFeedTask gettingRssTask = new FetchFeedTask();
+            gettingRssTask.execute();
+        } else {
+            Toast toast = Toast.makeText(context, "Offline", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        mSwipeLayout.setOnRefreshListener(() -> {
+            if (mFeedModelList != null){
+                mRecyclerView.clearOnChildAttachStateChangeListeners();
+                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+                mFeedModelList = null;
+            } else {
+                FetchFeedTask gettingRssTask = new FetchFeedTask();
+                gettingRssTask.execute();
+            }
+        });
+
+
+
+
+//        String message;
+//        if (isOnline()) {
+//            message = getResources().getString(R.string.online_message);
+//            mSwipeLayout.setOnRefreshListener(() -> new FetchFeedTask().execute((Void) null));
+//            new FetchFeedTask().execute((Void) null);
+//        } else {
+//            message = getResources().getString(R.string.offline_message);
+//            mSwipeLayout.setOnRefreshListener(()->{});
+//            mRecyclerView.setAdapter(
+//                    new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
+//        }
+//        Toast toast = Toast.makeText((Context) onFragmentRssListener, message,Toast.LENGTH_LONG);
+//        toast.show();
 
         return view;
     }
-
 
 
     @Override
@@ -220,6 +246,9 @@ public class RssFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void tryUpdateNews(){
 
     }
 }
