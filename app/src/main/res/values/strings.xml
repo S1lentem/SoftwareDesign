@@ -96,6 +96,7 @@
     <string name="message_for_empty_first_name">First name field cannot be empty</string>
     <string name="message_for_empty_last_name">Last name field cannot be empty</string>
     <string name="message_for_empty_phone">Phone field cannot be empty</string>
+    <string name="message_for_empty_fields">All field not be empty</string>
 
     <!-- invalid field messages -->
     <string name="massage_for_not_match_password">confirm password and password must match</string>

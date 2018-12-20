@@ -160,9 +160,10 @@ public class MainActivity extends PermissionActivity
     }
 
     @Override
-    public void saveNewsResources(String resource) {
+    public void saveNewsResources(String resource, int count) {
         User user = userRepository.getUserById(currentUserId);
         user.setNewsSource(resource);
+        user.setCountRssForCached(count);
         userRepository.savedUser(user);
         navController.popBackStack();
     }
@@ -382,12 +383,10 @@ public class MainActivity extends PermissionActivity
     }
 
     private void saveUserInfo(User user, Bitmap avatar) throws EmptyFieldException {
-        List<String> emptyFields = TextManager.isEmpty(user.getFirstName(), user.getLastName(),
-                user.getPhone(), user.getEmail());
-        if (emptyFields != null){
-            throw new EmptyFieldException(emptyFields);
+       if (TextManager.isEmpty(user.getFirstName(), user.getLastName(),
+                user.getPhone(), user.getEmail())) {
+            throw new EmptyFieldException(getResources().getString(R.string.message_for_empty_fields));
         }
-
         userRepository.savedUser(user);
         if (isChangeAvatar) {
             userAvatarManager.updateAvatar(avatar);

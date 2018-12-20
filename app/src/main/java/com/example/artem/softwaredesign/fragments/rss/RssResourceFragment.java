@@ -1,7 +1,6 @@
 package com.example.artem.softwaredesign.fragments.rss;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,20 +8,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentNewSourceListener;
+import com.example.artem.softwaredesign.support.TextManager;
 import com.google.android.material.textfield.TextInputLayout;
-
-import org.w3c.dom.Text;
 
 public class RssResourceFragment extends Fragment {
 
     private OnFragmentNewSourceListener onFragmentNewSourceListener;
 
-    private TextView newsSourceTextView;
+    private EditText newsSourceTextView;
+    private EditText countNewsForCacheEditText;
+
     private TextInputLayout newsSourceTextInputLayout;
+    private TextInputLayout countNewsForCacheTextInputLayout;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,13 +33,17 @@ public class RssResourceFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_new_source, container, false);
 
         newsSourceTextView = view.findViewById(R.id.first_news_source);
+        countNewsForCacheEditText = view.findViewById(R.id.count_rss_in_cache_edit_text);
+
         newsSourceTextInputLayout = view.findViewById(R.id.first_news_source_text_input_layout);
+        countNewsForCacheTextInputLayout = view.findViewById(R.id.count_rss_in_cache_text_input_layout);
 
         String resource = onFragmentNewSourceListener.getUser().getNewsSource();
         newsSourceTextView.setText(resource != null ? resource : "");
         view.findViewById(R.id.save_news_resource_button).setOnClickListener(v ->{
             if (isValidSource()){
-                onFragmentNewSourceListener.saveNewsResources(newsSourceTextView.getText().toString());
+                onFragmentNewSourceListener.saveNewsResources(newsSourceTextView.getText().toString(),
+                        Integer.valueOf(countNewsForCacheEditText.getText().toString()));
             }
         });
 
@@ -55,11 +62,15 @@ public class RssResourceFragment extends Fragment {
         }
     }
 
-    public boolean isValidSource(){
-        if (!newsSourceTextView.getText().toString().isEmpty()){
-            return true;
+    private boolean isValidSource(){
+        String resourceNews = newsSourceTextView.getText().toString();
+        String countInCache = countNewsForCacheEditText.getText().toString();
+        if (TextManager.isEmpty(resourceNews, countInCache)){
+            Toast toast = Toast.makeText((Context) onFragmentNewSourceListener,
+                    getResources().getString(R.string.message_for_empty_fields), Toast.LENGTH_LONG);
+            toast.show();
+            return false;
         }
-        newsSourceTextInputLayout.setError("Ooops");
-        return false;
+        return true;
     }
 }
