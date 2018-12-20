@@ -54,11 +54,15 @@ public class RssFeedListAdapter
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
         final RssFeed rssFeedModel = mRssFeedModels.get(position);
         ((TextView) holder.rssFeedView.findViewById(R.id.titleText)).setText(rssFeedModel.getTitle());
-        ((TextView) holder.rssFeedView.findViewById(R.id.descriptionText))
-                .setText(rssFeedModel.getDescription());
+        ((TextView) holder.rssFeedView.findViewById(R.id.descriptionText)).setText(rssFeedModel.getDescription());
         ((TextView) holder.rssFeedView.findViewById(R.id.dateText)).setText(rssFeedModel.getDate());
-        Picasso.with(context).load(rssFeedModel.getUrl())
-                .into((ImageView) holder.rssFeedView.findViewById(R.id.imageFeed));
+
+        if (rssFeedModel.getUrl() != null && !rssFeedModel.getUrl().equals("")){
+            Picasso.with(context).load(rssFeedModel.getUrl())
+                    .into((ImageView) holder.rssFeedView.findViewById(R.id.imageFeed));
+
+        }
+
         holder.rssFeedView.setOnClickListener(v -> {
             if (isOnline()) {
                 Intent intent = new Intent(context, WebActivity.class);
