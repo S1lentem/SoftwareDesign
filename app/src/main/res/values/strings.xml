@@ -63,6 +63,7 @@
     <string name="password_label">Password</string>
     <string name="confirm_password_label">Confirm password</string>
     <string name="news_resource_label">News resource</string>
+    <string name="count_rss_in_cache_label">Count rss news for save in cache</string>
 
     <!-- Fragments names -->
     <string name="user_info_fragment_title">User Info</string>

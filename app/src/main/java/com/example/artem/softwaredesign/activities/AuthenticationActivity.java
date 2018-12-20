@@ -20,9 +20,7 @@ public class AuthenticationActivity extends UserStorageActivity
     implements OnFragmentAuthorizationListener, OnFragmentRegistrationListener {
 
     private NavController navController;
-
-
-    private final String USER_KEY = "user_key";
+    private int DEFAULT_COUNT_RSS_NEWS_FOR_SAVE_CACHE = 10;
 
     private final HashManager hashManager = new HashManager(EncryptionAlgorithm.MD5);
 
@@ -80,7 +78,8 @@ public class AuthenticationActivity extends UserStorageActivity
         if (userRepository.getUserByEmail(email) != null){
             throw new EmailAlreadyTakenException(email);
         }
-        User user = new User(0, firstName, lastName, email, phone, hashManager.getHash(password));
+        User user = new User(0, firstName, lastName, email, phone,
+                hashManager.getHash(password), null, DEFAULT_COUNT_RSS_NEWS_FOR_SAVE_CACHE);
         userRepository.addUser(user);
         int id = userRepository.getUserByEmail(user.getEmail()).getId();
         logIn(String.valueOf(id));

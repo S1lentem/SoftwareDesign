@@ -44,9 +44,9 @@ public class UserSQLiteRepository implements UserRepository {
         contentValues.put(ColumnsTable.news_source.toString(), user.getNewsSource());
         contentValues.put(ColumnsTable.count_for_cache.toString(), user.getCountRssForCached());
 
-
         try (SQLiteDatabase database = dbHelper.getReadableDatabase()) {
-            database.insert(dbHelper.getTableName(), null, contentValues);
+            long e = database.insert(dbHelper.getTableName(), null, contentValues);
+            long d  = e;
         }
     }
 
