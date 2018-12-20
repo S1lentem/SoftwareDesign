@@ -45,7 +45,6 @@ public class RssFragment extends Fragment {
     private List<RssFeed> mFeedModelList;
 
 
-
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
         private String urlLink;
@@ -62,7 +61,7 @@ public class RssFragment extends Fragment {
                 return false;
 
             try {
-                if(!urlLink.startsWith("http://") && !urlLink.startsWith("https://"))
+                if (!urlLink.startsWith("http://") && !urlLink.startsWith("https://"))
                     urlLink = "http://" + urlLink;
 
                 URL url = new URL(urlLink);
@@ -81,8 +80,8 @@ public class RssFragment extends Fragment {
             mSwipeLayout.setRefreshing(false);
 
             if (success) {
-              //  mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
-                Toast toast = Toast.makeText((Context)onFragmentRssListener, "Loaded", Toast.LENGTH_LONG);
+                //  mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+                Toast toast = Toast.makeText((Context) onFragmentRssListener, "Loaded", Toast.LENGTH_LONG);
                 toast.show();
             } else {
                 Toast.makeText(context, "Enter a valid Rss feed url", Toast.LENGTH_LONG).show();
@@ -110,18 +109,18 @@ public class RssFragment extends Fragment {
                 int eventType = xmlPullParser.getEventType();
 
                 String name = xmlPullParser.getName();
-                if(name == null)
+                if (name == null)
                     continue;
 
-                if(eventType == XmlPullParser.END_TAG) {
-                    if(name.equalsIgnoreCase("item")) {
+                if (eventType == XmlPullParser.END_TAG) {
+                    if (name.equalsIgnoreCase("item")) {
                         isItem = false;
                     }
                     continue;
                 }
 
                 if (eventType == XmlPullParser.START_TAG) {
-                    if(name.equalsIgnoreCase("item")) {
+                    if (name.equalsIgnoreCase("item")) {
                         isItem = true;
                         continue;
                     }
@@ -140,16 +139,14 @@ public class RssFragment extends Fragment {
                     link = result;
                 } else if (name.equalsIgnoreCase("description")) {
                     description = result;
-                }
-                else if (name.equalsIgnoreCase("pubDate")){
+                } else if (name.equalsIgnoreCase("pubDate")) {
                     date = result;
-                }
-                else if (name.equalsIgnoreCase("enclosure")){
+                } else if (name.equalsIgnoreCase("enclosure")) {
                     url = xmlPullParser.getAttributeValue("", "url");
                 }
 
                 if (title != null && link != null && description != null && date != null) {
-                    if(isItem) {
+                    if (isItem) {
                         HtmlConverter parser = new HtmlConverter(description);
                         RssFeed item = new RssFeed(title, link, parser.getText(), date, url);
                         items.add(item);
@@ -171,7 +168,7 @@ public class RssFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String newsResources = onFragmentRssListener.getNewsResources();
-        if (newsResources == null || newsResources.equals("")){
+        if (newsResources == null || newsResources.equals("")) {
             onFragmentRssListener.redirectedToSettings();
         }
 
@@ -180,17 +177,17 @@ public class RssFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mSwipeLayout = view.findViewById(R.id.swipeRefreshLayout);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(),2));
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         } else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
         List<RssFeed> feedFromCache = onFragmentRssListener.getRssFromCache();
-        if (!feedFromCache.isEmpty()){
+        if (!feedFromCache.isEmpty()) {
             mRecyclerView.setAdapter(new RssFeedListAdapter(feedFromCache, context));
         }
 
-        if (isOnline()){
+        if (isOnline()) {
             FetchFeedTask gettingRssTask = new FetchFeedTask();
             gettingRssTask.execute();
         } else {
@@ -198,7 +195,7 @@ public class RssFragment extends Fragment {
             toast.show();
         }
         mSwipeLayout.setOnRefreshListener(() -> {
-            if (mFeedModelList != null){
+            if (mFeedModelList != null) {
                 mRecyclerView.clearOnChildAttachStateChangeListeners();
                 mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
                 mFeedModelList = null;
@@ -208,23 +205,6 @@ public class RssFragment extends Fragment {
             }
         });
 
-
-
-
-//        String message;
-//        if (isOnline()) {
-//            message = getResources().getString(R.string.online_message);
-//            mSwipeLayout.setOnRefreshListener(() -> new FetchFeedTask().execute((Void) null));
-//            new FetchFeedTask().execute((Void) null);
-//        } else {
-//            message = getResources().getString(R.string.offline_message);
-//            mSwipeLayout.setOnRefreshListener(()->{});
-//            mRecyclerView.setAdapter(
-//                    new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
-//        }
-//        Toast toast = Toast.makeText((Context) onFragmentRssListener, message,Toast.LENGTH_LONG);
-//        toast.show();
-
         return view;
     }
 
@@ -233,22 +213,17 @@ public class RssFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        if (context instanceof  OnFragmentRssListener){
+        if (context instanceof OnFragmentRssListener) {
             onFragmentRssListener = (OnFragmentRssListener) context;
-        }
-        else {
+        } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentRssListener");
         }
     }
 
-    private Boolean isOnline(){
+    private Boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    private void tryUpdateNews(){
-
     }
 }

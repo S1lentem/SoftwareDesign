@@ -1,6 +1,10 @@
 package com.example.artem.softwaredesign.data;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.artem.softwaredesign.R;
+import com.example.artem.softwaredesign.activities.WebActivity;
 import com.example.artem.softwaredesign.data.models.RssFeed;
 import com.squareup.picasso.Picasso;
 
@@ -20,7 +25,6 @@ public class RssFeedListAdapter
 
     private final Context context;
     private List<RssFeed> mRssFeedModels;
-
 
 
     public static class FeedModelViewHolder extends RecyclerView.ViewHolder {
@@ -49,16 +53,29 @@ public class RssFeedListAdapter
     @Override
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
         final RssFeed rssFeedModel = mRssFeedModels.get(position);
-        ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(rssFeedModel.getTitle());
-        ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText))
+        ((TextView) holder.rssFeedView.findViewById(R.id.titleText)).setText(rssFeedModel.getTitle());
+        ((TextView) holder.rssFeedView.findViewById(R.id.descriptionText))
                 .setText(rssFeedModel.getDescription());
-        ((TextView)holder.rssFeedView.findViewById(R.id.dateText)).setText(rssFeedModel.getDate());
+        ((TextView) holder.rssFeedView.findViewById(R.id.dateText)).setText(rssFeedModel.getDate());
         Picasso.with(context).load(rssFeedModel.getUrl())
-                .into((ImageView)holder.rssFeedView.findViewById(R.id.imageFeed));
+                .into((ImageView) holder.rssFeedView.findViewById(R.id.imageFeed));
+        holder.rssFeedView.setOnClickListener(v -> {
+            if (isOnline()) {
+                Intent intent = new Intent(context, WebActivity.class);
+                intent.setData(Uri.parse(rssFeedModel.getLink()));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mRssFeedModels.size();
+    }
+
+    private Boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
