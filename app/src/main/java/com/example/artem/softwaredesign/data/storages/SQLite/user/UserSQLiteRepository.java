@@ -25,14 +25,11 @@ public class UserSQLiteRepository implements UserRepository {
         cv.put(ColumnsTable.phone.toString(), user.getPhone());
         cv.put(ColumnsTable.email.toString(), user.getEmail());
         cv.put(ColumnsTable.news_source.toString(), user.getNewsSource());
+        cv.put(ColumnsTable.count_for_cache.toString(), user.getCountRssForCached());
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        try {
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase()) {
             db.update(dbHelper.getTableName(), cv,
                     ColumnsTable.id.toString() + "=" + String.valueOf(userId), null);
-        }
-        finally {
-            db.close();
         }
     }
 
@@ -45,12 +42,11 @@ public class UserSQLiteRepository implements UserRepository {
         contentValues.put(ColumnsTable.email.toString(), user.getEmail());
         contentValues.put(ColumnsTable.password.toString(), user.getPassword());
         contentValues.put(ColumnsTable.news_source.toString(), user.getNewsSource());
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        try {
+        contentValues.put(ColumnsTable.count_for_cache.toString(), user.getCountRssForCached());
+
+
+        try (SQLiteDatabase database = dbHelper.getReadableDatabase()) {
             database.insert(dbHelper.getTableName(), null, contentValues);
-        }
-        finally {
-            database.close();
         }
     }
 
@@ -68,7 +64,9 @@ public class UserSQLiteRepository implements UserRepository {
                 String phone = cursor.getString(ColumnsTable.phone.ordinal());
                 String password = cursor.getString(ColumnsTable.password.ordinal());
                 String newSource = cursor.getString(ColumnsTable.news_source.ordinal());
-                return new User(userId, firstName, lastName, email, phone, password, newSource);
+                int countForCache = cursor.getInt(ColumnsTable.count_for_cache.ordinal());
+
+                return new User(userId, firstName, lastName, email, phone, password, newSource, countForCache);
             }
             return null;
         }
@@ -79,12 +77,11 @@ public class UserSQLiteRepository implements UserRepository {
 
     @Override
     public User getUserById(int id){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        try {
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase()) {
             String request = "SELECT * FROM " + dbHelper.getTableName()
                     + " WHERE " + ColumnsTable.id.toString() + " = " + String.valueOf(id) + ";";
             Cursor cursor = db.rawQuery(request, null);
-            if (cursor.moveToFirst()){
+            if (cursor.moveToFirst()) {
                 userId = cursor.getInt(ColumnsTable.id.ordinal());
                 String firstName = cursor.getString(ColumnsTable.first_name.ordinal());
                 String lastName = cursor.getString(ColumnsTable.last_name.ordinal());
@@ -92,12 +89,11 @@ public class UserSQLiteRepository implements UserRepository {
                 String email = cursor.getString(ColumnsTable.email.ordinal());
                 String password = cursor.getString(ColumnsTable.password.ordinal());
                 String newsResource = cursor.getString(ColumnsTable.news_source.ordinal());
-                return new User(userId, firstName, lastName, email, phone, password, newsResource);
+                int countFotCache = cursor.getInt(ColumnsTable.count_for_cache.ordinal());
+
+                return new User(userId, firstName, lastName, email, phone, password, newsResource, countFotCache);
             }
             return null;
-        }
-        finally {
-            db.close();
         }
     }
 }

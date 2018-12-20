@@ -8,11 +8,12 @@ public class User {
     private String phone;
     private String password;
     private String newsSource;
-    private int count;
+    private int countRssForCached;
+
     public User(int id, String firstName, String lastName, String email, String phone, String password,
-                String newsResource, int count){
+                String newsResource, int countRssForCached){
         this(id, firstName, lastName, email, phone, password, newsResource);
-        this.count = count;
+        this.countRssForCached = countRssForCached;
     }
 
     public User(String firsName, String lastName, String email, String phone){
@@ -85,8 +86,12 @@ public class User {
         this.newsSource = newsSource;
     }
 
-    public int getCount() {
-        return count;
+
+    public int getCountRssForCached() {
+        return countRssForCached;
     }
 
+    public void setCountRssForCached(int countRssForCached) {
+        this.countRssForCached = countRssForCached;
+    }
 }

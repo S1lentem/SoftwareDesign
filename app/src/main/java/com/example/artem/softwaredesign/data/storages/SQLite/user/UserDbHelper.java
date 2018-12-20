@@ -24,7 +24,8 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 + ColumnsTable.phone + " text,"
                 + ColumnsTable.email + " text,"
                 + ColumnsTable.password + " text,"
-                + ColumnsTable.news_source + " text" + ");");
+                + ColumnsTable.news_source + " text,"
+                + ColumnsTable.count_for_cache + " integer" + ");");
     }
 
     @Override

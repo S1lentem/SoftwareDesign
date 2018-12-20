@@ -7,5 +7,6 @@ enum ColumnsTable {
     phone,
     email,
     password,
-    news_source
+    news_source,
+    count_for_cache
 }
