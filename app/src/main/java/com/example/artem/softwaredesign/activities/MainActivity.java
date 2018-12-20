@@ -107,7 +107,7 @@ public class MainActivity extends PermissionActivity
 
 
 
-        findViewById(R.id.about_button).setOnClickListener(this::onAbloutClickListener);
+        findViewById(R.id.about_button).setOnClickListener(this::onAboutClickListener);
         User user = userRepository.getUserById(currentUserId);
         headerView.findViewById(R.id.image_from_nav_header).setOnClickListener(v -> {
             navController.navigate(R.id.user_info_fragment);
@@ -149,7 +149,7 @@ public class MainActivity extends PermissionActivity
     @Override
     public void saveRssInCache(List<RssFeed> feeds) {
         rssRepository.clearCache();
-        for (RssFeed feed: feeds) {
+        for (RssFeed feed: feeds.subList(0, userRepository.getUserById(currentUserId).getCountRssForCached())) {
             rssRepository.addRss(feed);
         }
     }
@@ -193,7 +193,7 @@ public class MainActivity extends PermissionActivity
         alert.show();
     }
 
-    private void onAbloutClickListener(View v){
+    private void onAboutClickListener(View v){
         if (isInMainFragment()){
             navController.navigate(R.id.about);
         } else {

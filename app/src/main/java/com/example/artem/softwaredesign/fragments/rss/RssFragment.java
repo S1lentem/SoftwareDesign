@@ -65,7 +65,7 @@ public class RssFragment extends Fragment {
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
                 mFeedModelList = parseFeed(inputStream);
-                onFragmentRssListener.saveRssInCache(mFeedModelList.subList(0, 10));
+                onFragmentRssListener.saveRssInCache(mFeedModelList);
                 return true;
             } catch (IOException | XmlPullParserException e) {
                 Log.e("Error", e.getMessage());
