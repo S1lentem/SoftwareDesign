@@ -1,6 +1,7 @@
 package com.example.artem.softwaredesign.fragments.rss;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -175,7 +177,12 @@ public class RssFragment extends Fragment {
 
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mSwipeLayout = view.findViewById(R.id.swipeRefreshLayout);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(),2));
+        } else {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
 
         String message;
         if (isOnline()) {
@@ -189,6 +196,7 @@ public class RssFragment extends Fragment {
                     new RssFeedListAdapter(onFragmentRssListener.getRssFromCache(), context));
         }
         Toast toast = Toast.makeText((Context) onFragmentRssListener, message,Toast.LENGTH_LONG);
+        toast.show();
 
         return view;
     }
