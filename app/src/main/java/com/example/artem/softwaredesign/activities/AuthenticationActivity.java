@@ -36,11 +36,13 @@ public class AuthenticationActivity extends PermissionActivity
         }
 
         String userId = sessionController.getIdAuthorizedUser();
-        String validPassword = userRepository.getUserById(Integer.parseInt(userId)).getPassword();
-        String authorizedPassword = sessionController.getPasswordHashAuthorizedUser();
 
-        if (userId != null && validPassword.equals(authorizedPassword)){
-            logIn(userId, validPassword);
+        if (userId != null){
+            String validPassword = userRepository.getUserById(Integer.parseInt(userId)).getPassword();
+            String authorizedPassword = sessionController.getPasswordHashAuthorizedUser();
+            if (validPassword.equals(authorizedPassword)) {
+                logIn(userId, validPassword);
+            }
         }
 
         setContentView(R.layout.activity_authentication);

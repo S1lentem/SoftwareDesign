@@ -40,6 +40,7 @@ public class SessionController {
     public void logOut() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(CURRENT_USER_ID_KEY);
+        editor.remove(CURRENT_USER_PASSWORD_HASH);
         editor.apply();
     }
 }
