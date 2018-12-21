@@ -2,6 +2,8 @@ package com.example.artem.softwaredesign.fragments.rss;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -42,12 +44,19 @@ public class RssFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeLayout;
-    private List<RssFeed> mFeedModelList;
 
+    private List<RssFeed> mFeedModelList;
+    private List<RssFeed> asyncLoadedFeedModelList;
 
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
         private String urlLink;
+        private final boolean isUpdateView;
+
+
+        FetchFeedTask(boolean isUpdateView){
+            this.isUpdateView = isUpdateView;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -66,7 +75,7 @@ public class RssFragment extends Fragment {
 
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
-                mFeedModelList = parseFeed(inputStream);
+                asyncLoadedFeedModelList = parseFeed(inputStream);
                 onFragmentRssListener.saveRssInCache(mFeedModelList);
                 return true;
             } catch (IOException | XmlPullParserException e) {
@@ -80,7 +89,9 @@ public class RssFragment extends Fragment {
             mSwipeLayout.setRefreshing(false);
 
             if (success) {
-                //  mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+                if (isUpdateView) {
+                    mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+                }
                 Toast toast = Toast.makeText((Context) onFragmentRssListener, "Loaded", Toast.LENGTH_LONG);
                 toast.show();
             } else {
@@ -182,29 +193,33 @@ public class RssFragment extends Fragment {
         } else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
+
+        boolean asyncLoad = true;
         List<RssFeed> feedFromCache = onFragmentRssListener.getRssFromCache();
         if (!feedFromCache.isEmpty()) {
             mRecyclerView.setAdapter(new RssFeedListAdapter(feedFromCache, context));
+        } else {
+            new FetchFeedTask(true).execute();
+            asyncLoad = false;
         }
 
-        if (isOnline()) {
-            FetchFeedTask gettingRssTask = new FetchFeedTask();
-            gettingRssTask.execute();
-        } else {
+        if (isOnline() && asyncLoad) {
+            new FetchFeedTask(false).execute();
+        } else if (!isOnline()) {
             Toast toast = Toast.makeText(context, "Offline", Toast.LENGTH_LONG);
             toast.show();
         }
         mSwipeLayout.setOnRefreshListener(() -> {
-            if (mFeedModelList != null) {
+            if (asyncLoadedFeedModelList != null) {
                 mRecyclerView.clearOnChildAttachStateChangeListeners();
-                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
-                mFeedModelList = null;
+                mRecyclerView.setAdapter(new RssFeedListAdapter(asyncLoadedFeedModelList, context));
+                mFeedModelList = asyncLoadedFeedModelList;
+                asyncLoadedFeedModelList = null;
             } else {
-                FetchFeedTask gettingRssTask = new FetchFeedTask();
+                FetchFeedTask gettingRssTask = new FetchFeedTask(true);
                 gettingRssTask.execute();
             }
         });
-
         return view;
     }
 

@@ -49,6 +49,9 @@ public class RssResourceFragment extends Fragment {
                 onFragmentNewSourceListener.saveNewsResources(newsSourceTextView.getText().toString(),
                         Integer.valueOf(countNewsForCacheEditText.getText().toString()));
             }
+            if (getArguments() != null && getArguments().getBoolean("first")){
+                onFragmentNewSourceListener.goToRssFeeds();
+            }
         });
 
         return view;

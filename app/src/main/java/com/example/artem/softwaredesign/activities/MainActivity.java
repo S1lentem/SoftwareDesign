@@ -143,7 +143,9 @@ public class MainActivity extends PermissionActivity
     @Override
     public void redirectedToSettings() {
         navController.popBackStack();
-        navController.navigate(R.id.newSourceFragment);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("first", true);
+        navController.navigate(R.id.newSourceFragment, bundle);
     }
 
     @Override
@@ -291,6 +293,11 @@ public class MainActivity extends PermissionActivity
     @Override
     public User getUser() {
         return userRepository.getUserById(currentUserId);
+    }
+
+    @Override
+    public void goToRssFeeds() {
+        navController.navigate(R.id.rssFragment);
     }
 
     @Override
