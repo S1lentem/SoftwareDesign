@@ -36,8 +36,11 @@ public class AuthenticationActivity extends PermissionActivity
         }
 
         String userId = sessionController.getIdAuthorizedUser();
-        if (userId != null){
-            logIn(userId);
+        String validPassword = userRepository.getUserById(Integer.parseInt(userId)).getPassword();
+        String authorizedPassword = sessionController.getPasswordHashAuthorizedUser();
+
+        if (userId != null && validPassword.equals(authorizedPassword)){
+            logIn(userId, validPassword);
         }
 
         setContentView(R.layout.activity_authentication);
@@ -61,7 +64,7 @@ public class AuthenticationActivity extends PermissionActivity
         User user = userRepository.getUserByEmail(email);
         if (user != null){
             if (user.getPassword().equals(hashManager.getHash(password))){
-                logIn(String.valueOf(user.getId()));
+                logIn(String.valueOf(user.getId()), user.getPassword());
             }
             else {
                 throw new PasswordDoesNotMatchException();
@@ -72,9 +75,8 @@ public class AuthenticationActivity extends PermissionActivity
         }
     }
 
-    public void logIn(String id){
-        sessionController.logIn(id);
-
+    public void logIn(String id, String password){
+        sessionController.logIn(id, password);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
@@ -89,6 +91,6 @@ public class AuthenticationActivity extends PermissionActivity
                 hashManager.getHash(password), null, DEFAULT_COUNT_RSS_NEWS_FOR_SAVE_CACHE);
         userRepository.addUser(user);
         int id = userRepository.getUserByEmail(user.getEmail()).getId();
-        logIn(String.valueOf(id));
+        logIn(String.valueOf(id), password);
     }
 }

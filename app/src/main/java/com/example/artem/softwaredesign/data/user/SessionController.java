@@ -9,6 +9,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class SessionController {
 
     private final String CURRENT_USER_ID_KEY = "current_user";
+    private final String CURRENT_USER_PASSWORD_HASH = "hash";
     private final String PREFERENCES_NAME = "user_controller";
 
     private SharedPreferences preferences;
@@ -24,9 +25,15 @@ public class SessionController {
 
     }
 
-    public void logIn(String id) {
+    public String getPasswordHashAuthorizedUser(){
+        return preferences.contains(CURRENT_USER_PASSWORD_HASH) ?
+                preferences.getString(CURRENT_USER_PASSWORD_HASH, null) : null;
+    }
+
+    public void logIn(String id, String password) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(CURRENT_USER_ID_KEY, String.valueOf(id));
+        editor.putString(CURRENT_USER_PASSWORD_HASH, password);
         editor.apply();
     }
 
