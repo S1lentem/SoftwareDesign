@@ -6,17 +6,19 @@ import android.os.Bundle;
 import com.example.artem.softwaredesign.R;
 import com.example.artem.softwaredesign.data.crypto.EncryptionAlgorithm;
 import com.example.artem.softwaredesign.data.crypto.HashManager;
+import com.example.artem.softwaredesign.data.exceptions.about.NotAccessToImeiException;
 import com.example.artem.softwaredesign.data.exceptions.validation.EmailAlreadyTakenException;
 import com.example.artem.softwaredesign.data.exceptions.validation.EmailNotFoundException;
 import com.example.artem.softwaredesign.data.exceptions.validation.PasswordDoesNotMatchException;
 import com.example.artem.softwaredesign.data.models.User;
+import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAboutListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentAuthorizationListener;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRegistrationListener;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-public class AuthenticationActivity extends UserStorageActivity
+public class AuthenticationActivity extends PermissionActivity
     implements OnFragmentAuthorizationListener, OnFragmentRegistrationListener {
 
     private NavController navController;
@@ -40,11 +42,17 @@ public class AuthenticationActivity extends UserStorageActivity
 
         setContentView(R.layout.activity_authentication);
         navController = Navigation.findNavController(this, R.id.auth_host_fragment);
+
     }
 
     @Override
     public void onGoToRegistrationButtonClick(){
         navController.navigate(R.id.registrationFragment);
+    }
+
+    @Override
+    public void goToAbout(){
+        navController.navigate(R.id.aboutFragment);
     }
 
     @Override
@@ -68,7 +76,6 @@ public class AuthenticationActivity extends UserStorageActivity
         sessionController.logIn(id);
 
         Intent intent = new Intent(this, MainActivity.class);
-//        intent.putExtra(CURRENT_USER_ID_KEY, id);
         startActivity(intent);
     }
 
@@ -83,10 +90,5 @@ public class AuthenticationActivity extends UserStorageActivity
         userRepository.addUser(user);
         int id = userRepository.getUserByEmail(user.getEmail()).getId();
         logIn(String.valueOf(id));
-    }
-
-    @Override
-    public void onBackButtonClick() {
-        navController.popBackStack();
     }
 }

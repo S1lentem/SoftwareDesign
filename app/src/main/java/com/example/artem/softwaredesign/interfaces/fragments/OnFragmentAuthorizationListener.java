@@ -6,4 +6,5 @@ import com.example.artem.softwaredesign.data.exceptions.validation.PasswordDoesN
 public interface OnFragmentAuthorizationListener {
     void onGoToRegistrationButtonClick();
     void onLogInButtonClick(String email, String password) throws PasswordDoesNotMatchException, EmailNotFoundException;
+    void goToAbout();
 }

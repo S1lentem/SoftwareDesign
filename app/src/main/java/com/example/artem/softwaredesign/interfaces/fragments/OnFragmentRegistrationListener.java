@@ -4,5 +4,5 @@ import com.example.artem.softwaredesign.data.exceptions.validation.EmailAlreadyT
 
 public interface OnFragmentRegistrationListener {
     void onRegistrationButtonClick(String firstName, String lastName, String email, String phone, String password) throws EmailAlreadyTakenException;
-    void onBackButtonClick();
+    void goToAbout();
 }

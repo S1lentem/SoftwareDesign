@@ -113,12 +113,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/registration_button_name" />
-
             <Button
-                android:id="@+id/back_from_registration_button"
+                android:id="@+id/about_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/back_to_user_info" />
+                android:text="@string/about" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

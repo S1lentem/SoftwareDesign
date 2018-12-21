@@ -34,6 +34,8 @@ public class AuthorizationFragment extends Fragment {
         emailTextInputLayout = view.findViewById(R.id.email_for_authorization_text_input_layout);
         passwordTextInputLayout = view.findViewById(R.id.password_for_authorization_text_input_layout);
 
+        view.findViewById(R.id.about_button).setOnClickListener(v -> onFragmentAuthorizationListener.goToAbout());
+
         view.findViewById(R.id.log_in_button).setOnClickListener(
                 v -> onLogInButtonClick());
 

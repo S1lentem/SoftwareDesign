@@ -40,8 +40,7 @@ public class RegistrationFragment extends Fragment {
         initializationViewComponents(view);
 
         view.findViewById(R.id.registration_button).setOnClickListener(v -> createNewUser());
-        view.findViewById(R.id.back_from_registration_button).setOnClickListener(
-                v -> onFragmentAuthorizationListener.onBackButtonClick());
+        view.findViewById(R.id.about_button).setOnClickListener(v -> onFragmentAuthorizationListener.goToAbout());
 
         return view;
     }
