@@ -163,6 +163,10 @@ public class MainActivity extends PermissionActivity
 
     @Override
     public void saveNewsResources(String resource, int count) {
+        String oldResource = userRepository.getUserById(currentUserId).getNewsSource();
+        if (oldResource != null && !oldResource.equals(resource)){
+            rssRepository.clearCache();
+        }
         userRepository.updateUserSettings(resource, count, currentUserId);
         navController.popBackStack();
     }

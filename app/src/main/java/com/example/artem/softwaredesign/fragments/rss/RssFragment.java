@@ -21,6 +21,8 @@ import com.example.artem.softwaredesign.data.HtmlConverter;
 import com.example.artem.softwaredesign.data.RssFeedListAdapter;
 import com.example.artem.softwaredesign.data.models.RssFeed;
 import com.example.artem.softwaredesign.interfaces.fragments.OnFragmentRssListener;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,7 +47,6 @@ public class RssFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeLayout;
 
-    private List<RssFeed> mFeedModelList;
     private List<RssFeed> asyncLoadedFeedModelList;
 
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
@@ -54,7 +55,7 @@ public class RssFragment extends Fragment {
         private final boolean isUpdateView;
 
 
-        FetchFeedTask(boolean isUpdateView){
+        FetchFeedTask(boolean isUpdateView) {
             this.isUpdateView = isUpdateView;
         }
 
@@ -76,7 +77,6 @@ public class RssFragment extends Fragment {
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
                 asyncLoadedFeedModelList = parseFeed(inputStream);
-                onFragmentRssListener.saveRssInCache(mFeedModelList);
                 return true;
             } catch (IOException | XmlPullParserException e) {
                 Log.e("Error", e.getMessage());
@@ -90,12 +90,22 @@ public class RssFragment extends Fragment {
 
             if (success) {
                 if (isUpdateView) {
-                    mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, context));
+                    mRecyclerView.setAdapter(new RssFeedListAdapter(asyncLoadedFeedModelList, context));
+                    onFragmentRssListener.saveRssInCache(asyncLoadedFeedModelList);
+                } else {
+                    final View view = getActivity().findViewById(android.R.id.content);
+                    final String description = getResources().getString(R.string.loaded_rss_feed);
+                    final Snackbar bar = Snackbar.make(view, description, Snackbar.LENGTH_INDEFINITE);
+
+                    bar.setAction(getResources().getString(R.string.ok), v -> {
+                        mRecyclerView.setAdapter(new RssFeedListAdapter(asyncLoadedFeedModelList, context));
+                        onFragmentRssListener.saveRssInCache(asyncLoadedFeedModelList);
+                    }).setDuration(BaseTransientBottomBar.LENGTH_LONG).show();
+
                 }
-                Toast toast = Toast.makeText((Context) onFragmentRssListener, "Loaded", Toast.LENGTH_LONG);
-                toast.show();
             } else {
-                Toast.makeText(context, "Enter a valid Rss feed url", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.invalid_rss_resource),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -206,16 +216,16 @@ public class RssFragment extends Fragment {
         if (isOnline() && asyncLoad) {
             new FetchFeedTask(false).execute();
         } else if (!isOnline()) {
-            Toast toast = Toast.makeText(context, "Offline", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(context, getResources().getString(R.string.offline_message),
+                    Toast.LENGTH_LONG);
             toast.show();
         }
         mSwipeLayout.setOnRefreshListener(() -> {
             if (asyncLoadedFeedModelList != null) {
                 mRecyclerView.clearOnChildAttachStateChangeListeners();
                 mRecyclerView.setAdapter(new RssFeedListAdapter(asyncLoadedFeedModelList, context));
-                mFeedModelList = asyncLoadedFeedModelList;
                 asyncLoadedFeedModelList = null;
-            } else {
+            } else if (isOnline()){
                 FetchFeedTask gettingRssTask = new FetchFeedTask(true);
                 gettingRssTask.execute();
             }

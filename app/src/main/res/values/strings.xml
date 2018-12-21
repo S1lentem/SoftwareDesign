@@ -107,6 +107,10 @@
 
     <!-- Checking online -->
     <string name="online_message">You are online</string>
-    <string name="offline_message">You are offline. All news will be taken from the cache</string>
+    <string name="offline_message">You are currently offline. News feed will not be updated</string>
+    <string name="loaded_rss_feed">Click OK or swipe up to refresh the news feed</string>
 
+
+    <!-- Validation -->
+    <string name="invalid_rss_resource">Enter a valid Rss feed url</string>
 </resources>
